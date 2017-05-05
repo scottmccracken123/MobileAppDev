@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">PlaceMate</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="open">Open navigation drawer</string>
+    <string name="close">Close navigation drawer</string>
+</resources>
