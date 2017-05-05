@@ -1,13 +1,30 @@
 package placemate.placemate;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class MyPlacesActivity extends AppCompatActivity {
 
@@ -15,6 +32,7 @@ public class MyPlacesActivity extends AppCompatActivity {
     private ActionBarDrawerToggle mToggle;
     private Toolbar mToolbar;
     private NavigationView mNavigationView;
+    String result;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,11 +43,11 @@ public class MyPlacesActivity extends AppCompatActivity {
         //get draw layout
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
-
+        final Button viewPlaceBtn = (Button)findViewById(R.id.viewPlaceBtn);
         //add toggle option to layout
         mDrawerLayout.addDrawerListener(mToggle);
         mToggle.syncState();
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
         NavigationView nv = (NavigationView)findViewById(R.id.nav_view);
@@ -49,6 +67,19 @@ public class MyPlacesActivity extends AppCompatActivity {
             }
         });
 
+
+
+        viewPlaceBtn.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View view) {
+                Intent changeToPlace = new Intent(getApplicationContext(), ViewPlaceActivity.class);
+                //add in place to change from map? id? url?
+                //changeToPlace.putExtra("weatherdetail", "PLACE");
+                startActivity(changeToPlace);
+            }
+        });
+
     }
 
 
@@ -59,4 +90,6 @@ public class MyPlacesActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+
 }
