@@ -41,7 +41,10 @@ public class ViewPlaceActivity extends AppCompatActivity {
     private String venuePhoneNumber;
     private String venueRating;
     private String venueAddress;
-    String result;
+    private TextView addressTxtView;
+    private TextView placeNameTxtView;
+    private Button getApiBtn;
+    private String result;
 
 
     @Override
@@ -53,9 +56,9 @@ public class ViewPlaceActivity extends AppCompatActivity {
         //get draw layout
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
-        final Button getApiBtn = (Button)findViewById(R.id.getApiBtn);
-        final TextView addressTxtView = (TextView)findViewById(R.id.addressTxtView);
-        final TextView placeNameTxtView = (TextView)findViewById(R.id.placeNameTxtView);
+        getApiBtn = (Button)findViewById(R.id.getApiBtn);
+        addressTxtView = (TextView)findViewById(R.id.addressTxtView);
+        placeNameTxtView = (TextView)findViewById(R.id.placeNameTxtView);
         //add toggle option to layout
         //mDrawerLayout.addDrawerListener(mToggle);
         //mToggle.syncState();
@@ -78,23 +81,14 @@ public class ViewPlaceActivity extends AppCompatActivity {
             }
         });
 
-        getApiBtn.setOnClickListener(new View.OnClickListener(){
-
-
-            @Override
-            public void onClick(View v) {
-
-                GetAPIData asyncTask = new GetAPIData();
-                asyncTask.execute();
-                placeNameTxtView.setText(venueName);
-                addressTxtView.setText(venueAddress);
-
-            }
-        });
-
-
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        GetAPIData asyncTask = new GetAPIData();
+        asyncTask.execute();
+    }
 
     //makes icon bar actually work
     public boolean onOptionsItemSelected(MenuItem item){
@@ -152,10 +146,18 @@ public class ViewPlaceActivity extends AppCompatActivity {
                 venueAddress = venueDetails.getJSONObject("location").getString("address");
                 venuePhoneNumber = venueDetails.getJSONObject("contact").getString("phone");
                 //venueRating = venueDetails.getJSONObject("response").getString("rating");
+                //placeNameTxtView.setText(venueName);
+                setFields();
                 String testString = venueName + " " + venueAddress + " " + venueRating;
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }
+
+        private void setFields(){
+            placeNameTxtView.setText(venueName);
+            placeNameTxtView.setText(venueName);
+            addressTxtView.setText(venueAddress);
         }
 
         //The helper function that makes an HTTP GET request using the url passed in as the parameter
