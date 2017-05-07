@@ -7,7 +7,11 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 public class MyPlacesActivity extends AppCompatActivity {
 
@@ -16,9 +20,21 @@ public class MyPlacesActivity extends AppCompatActivity {
     private Toolbar mToolbar;
     private NavigationView mNavigationView;
 
+    private String users_name;
+    private String users_email;
+    private String users_id;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Intent previousIntent = getIntent();
+
+        users_name = (String)previousIntent.getSerializableExtra("firstName");
+        users_email = (String)previousIntent.getSerializableExtra("email");
+        users_id = (String)previousIntent.getSerializableExtra("ID");
+
+
         setContentView(R.layout.activity_my_places);
         mToolbar = (Toolbar) findViewById(R.id.nav_action);
         setSupportActionBar(mToolbar);
@@ -48,7 +64,6 @@ public class MyPlacesActivity extends AppCompatActivity {
                 return true;
             }
         });
-
     }
 
 

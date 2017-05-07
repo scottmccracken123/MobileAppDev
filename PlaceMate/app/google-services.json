@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "802973338107",
+    "project_id": "mob-app-dev-2017"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:802973338107:android:ef96793c30e3d0c9",
+        "android_client_info": {
+          "package_name": "placemate.placemate"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "802973338107-41310351u9nbh5n29n5mu7jj0sdr721k.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "802973338107-abe1lujvbd37mf75kt5gba1l6vj7ier9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "placemate.placemate",
+            "certificate_hash": "8612284b9fbb4ecba83d426b179f01a36bdc6093"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJcPbC0p0dC_X3M_MBRdK6XC5xJA35Yjs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
