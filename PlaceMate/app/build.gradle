@@ -32,6 +32,8 @@ dependencies {
     compile 'com.loopj.android:android-async-http:1.4.9'
     compile 'com.google.android.gms:play-services:9.2.0'
     compile 'com.google.android.gms:play-services-location:9.2.0'
-    compile 'com.google.android.gms:play-services:5.+'
+    compile 'com.google.android.gms:play-services-auth:9.2.0'
     testCompile 'junit:junit:4.12'
 }
+ apply plugin: 'com.google.gms.google-services'
+

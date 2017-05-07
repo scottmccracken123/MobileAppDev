@@ -19,7 +19,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 
-
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.GoogleApiClient;
 
 import static android.provider.UserDictionary.Words.APP_ID;
 
@@ -37,6 +39,7 @@ public class MapViewActivity extends AppCompatActivity{
     @Override
     protected void onCreate( Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 
         setContentView(R.layout.activity_map_view);
 
