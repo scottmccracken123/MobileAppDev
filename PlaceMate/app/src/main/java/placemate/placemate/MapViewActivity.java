@@ -17,16 +17,13 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
-
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,6 +34,7 @@ import java.net.URL;
 
 
 import static android.provider.UserDictionary.Words.APP_ID;
+import static com.loopj.android.http.AsyncHttpClient.LOG_TAG;
 
 public class MapViewActivity extends AppCompatActivity{
     private Button getLocationBtn;
@@ -47,11 +45,11 @@ public class MapViewActivity extends AppCompatActivity{
     private double longitude;
     private double latitude;
     private JSONObject placeDetails;
-
-
+    private String clientId;
+    private String clientSecret;
     private Button getApiBtn;
     private String result;
-
+    private String BASE_URL;
 
 
     @Override
@@ -61,17 +59,25 @@ public class MapViewActivity extends AppCompatActivity{
 
         setContentView(R.layout.activity_map_view);
 
+        // get variables form layout and strings
         locationTxtView = (TextView) findViewById(R.id.longitudeTxt);
         getLocationBtn = (Button) findViewById(R.id.getLocationBtn);
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        clientSecret = getResources().getString(R.string.client_secret);
+        clientId = getResources().getString(R.string.client_id);
 
 
         listener = new LocationListener() {
 
             @Override
             public void onLocationChanged(Location location) {
+
+                //get long and lat
                 longitude = location.getLongitude();
                 latitude = location.getLatitude();
+
+                //API URL
+                BASE_URL = "https://api.foursquare.com/v2/venues/search?ll=" + latitude +"," + longitude + "&client_id=" + clientId + "&client_secret=" +clientSecret+ "&v=20170101";
                 locationTxtView.append("\n " + longitude + " " + latitude);
                 GetNearAPIData asyncTask = new GetNearAPIData();
                 asyncTask.execute();
@@ -141,7 +147,7 @@ public class MapViewActivity extends AppCompatActivity{
 
             //create a URI
             //final String FORECAST_BASE_URL="https://api.foursquare.com/v2/venues/51d145718bbd51c5fe0f3132?client_id=YBO033ISFIBQBHR0RJ3O3RWTRMMS4GGDFTLUDYEMWYZQZWYO&client_secret=KMXY35UEU1VV53RQ2OVHFD3ZPQNWSX2YSK2LQOAHAK4ETTXZ&ll=51.513144,-0.124396&radius=2520&section=drinks&time=any&v=20150409&m=foursquare&limit=50&sortByDistance=1&offset=0";
-            final String FORECAST_BASE_URL = "https://api.foursquare.com/v2/venues/search?ll=" + latitude +"," + longitude + "&client_id=YBO033ISFIBQBHR0RJ3O3RWTRMMS4GGDFTLUDYEMWYZQZWYO&client_secret=KMXY35UEU1VV53RQ2OVHFD3ZPQNWSX2YSK2LQOAHAK4ETTXZ&v=20150409";
+            //final String FORECAST_BASE_URL = "https://api.foursquare.com/v2/venues/search?ll=" + latitude +"," + longitude + "&client_id=YBO033ISFIBQBHR0RJ3O3RWTRMMS4GGDFTLUDYEMWYZQZWYO&client_secret=KMXY35UEU1VV53RQ2OVHFD3ZPQNWSX2YSK2LQOAHAK4ETTXZ&v=20150409";
 
             //check connectivity
             ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -150,7 +156,8 @@ public class MapViewActivity extends AppCompatActivity{
                 //if the device is connected to a network, fetch data
 
                 //call the helper function to get data from the uri
-                result = GET(FORECAST_BASE_URL);
+                Log.d(LOG_TAG, BASE_URL);
+                result = GET(BASE_URL);
                 //Log.v(LOG_TAG, result);
 
 

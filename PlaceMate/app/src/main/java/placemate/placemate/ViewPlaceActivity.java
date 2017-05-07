@@ -30,6 +30,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import static com.loopj.android.http.AsyncHttpClient.LOG_TAG;
+
 public class ViewPlaceActivity extends AppCompatActivity {
 
     private DrawerLayout mDrawerLayout;
@@ -45,21 +47,36 @@ public class ViewPlaceActivity extends AppCompatActivity {
     private TextView placeNameTxtView;
     private Button getApiBtn;
     private String result;
+    private String clientId;
+    private String clientSecret;
+    private String BASE_URL;
+    //needss to be passed in from map view
+    private String venueId = "51d145718bbd51c5fe0f3132";
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_place);
+
+        //get variables from layouts and strings file
+        clientSecret = getResources().getString(R.string.client_secret);
+        clientId = getResources().getString(R.string.client_id);
         mToolbar = (Toolbar) findViewById(R.id.nav_action);
+        BASE_URL = "https://api.foursquare.com/v2/venues/"+ venueId +"?client_id="+ clientId +"&client_secret="+ clientSecret +"&v=20170101";
+
+
+
+
+        //get draw layout (side bar layout)
         setSupportActionBar(mToolbar);
-        //get draw layout
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
         getApiBtn = (Button)findViewById(R.id.getApiBtn);
         addressTxtView = (TextView)findViewById(R.id.addressTxtView);
         placeNameTxtView = (TextView)findViewById(R.id.placeNameTxtView);
-        //add toggle option to layout
+
+        //add toggle option to layout (NEED TO RE ADD THIS)
         //mDrawerLayout.addDrawerListener(mToggle);
         //mToggle.syncState();
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -104,8 +121,8 @@ public class ViewPlaceActivity extends AppCompatActivity {
         protected String doInBackground(Void... voids) {
 
             //create a URI
-            final String FORECAST_BASE_URL="https://api.foursquare.com/v2/venues/51d145718bbd51c5fe0f3132?client_id=YBO033ISFIBQBHR0RJ3O3RWTRMMS4GGDFTLUDYEMWYZQZWYO&client_secret=KMXY35UEU1VV53RQ2OVHFD3ZPQNWSX2YSK2LQOAHAK4ETTXZ&ll=51.513144,-0.124396&radius=2520&section=drinks&time=any&v=20150409&m=foursquare&limit=50&sortByDistance=1&offset=0";
-
+            //final String FORECAST_BASE_URL="https://api.foursquare.com/v2/venues/51d145718bbd51c5fe0f3132?client_id=YBO033ISFIBQBHR0RJ3O3RWTRMMS4GGDFTLUDYEMWYZQZWYO&client_secret=KMXY35UEU1VV53RQ2OVHFD3ZPQNWSX2YSK2LQOAHAK4ETTXZ&ll=51.513144,-0.124396&radius=2520&section=drinks&time=any&v=20150409&m=foursquare&limit=50&sortByDistance=1&offset=0";
+            Log.d(LOG_TAG, BASE_URL);
             //check connectivity
             ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
@@ -113,7 +130,7 @@ public class ViewPlaceActivity extends AppCompatActivity {
                 //if the device is connected to a network, fetch data
 
                 //call the helper function to get data from the uri
-                result = GET(FORECAST_BASE_URL);
+                result = GET(BASE_URL);
                 //Log.v(LOG_TAG, result);
 
 
@@ -127,7 +144,7 @@ public class ViewPlaceActivity extends AppCompatActivity {
 
             //remove the following return statements after the extra mile to return an ArrayList of information instead of a raw json string
             //return result;
-
+            Log.d("RESULT ", result);
             return result;
         }
 
