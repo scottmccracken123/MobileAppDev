@@ -37,7 +37,7 @@
         </activity>
         <activity android:name=".MyPlacesActivity" />
         <activity android:name=".MapViewActivity" />
-        <activity android:name=".RegisterActivity" />
+
         <activity android:name=".ViewPlaceActivity" />
 
         <meta-data

@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -33,6 +34,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+
 
 import static android.provider.UserDictionary.Words.APP_ID;
 
@@ -55,6 +57,7 @@ public class MapViewActivity extends AppCompatActivity{
     @Override
     protected void onCreate( Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 
         setContentView(R.layout.activity_map_view);
 
