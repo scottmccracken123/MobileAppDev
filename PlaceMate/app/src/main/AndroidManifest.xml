@@ -3,8 +3,8 @@
     package="placemate.placemate">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <activity
         android:name=".activity_my_places"
@@ -16,6 +16,11 @@
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
     </activity>
+
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <application
         android:allowBackup="true"
@@ -33,8 +38,18 @@
         <activity android:name=".MyPlacesActivity" />
         <activity android:name=".MapViewActivity" />
 
-        <meta-data android:name="com.google.android.gms.version"
+        <activity android:name=".ViewPlaceActivity" />
+
+        <meta-data
+            android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
+        <activity
+            android:name=".LoginActivity2"
+            android:label="@string/title_activity_login2">
+
+
+        </activity>
     </application>
 
 </manifest>
