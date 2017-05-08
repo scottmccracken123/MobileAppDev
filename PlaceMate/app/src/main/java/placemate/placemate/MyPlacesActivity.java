@@ -14,6 +14,10 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.view.View;
 import android.widget.Button;
@@ -34,10 +38,12 @@ import org.w3c.dom.Text;
 
 public class MyPlacesActivity extends AppCompatActivity {
 
+    DatabaseHelper databaseHelper;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mToggle;
     private Toolbar mToolbar;
     private NavigationView mNavigationView;
+  
     String result;
 
     private String users_name;
@@ -67,6 +73,10 @@ public class MyPlacesActivity extends AppCompatActivity {
         mToggle.syncState();
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        //database helper
+        databaseHelper = new DatabaseHelper(this);
+
+
 
         NavigationView nv = (NavigationView)findViewById(R.id.nav_view);
         nv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -84,7 +94,6 @@ public class MyPlacesActivity extends AppCompatActivity {
                 return true;
             }
         });
-
 
 
 
@@ -111,4 +120,19 @@ public class MyPlacesActivity extends AppCompatActivity {
     }
 
 
+
+    public void AddData(String newEntry){
+
+        boolean insertedData = databaseHelper.addData(newEntry);
+        if(insertedData) {
+            toastMessage("Data added successfully");
+        } else {
+            toastMessage("Something went wrong");
+        }
+    }
+
+    //makes toast with customisable message
+    private void toastMessage(String message){
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
 }
