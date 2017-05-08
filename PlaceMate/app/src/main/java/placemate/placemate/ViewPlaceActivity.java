@@ -2,6 +2,8 @@ package placemate.placemate;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -16,9 +18,11 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -31,6 +35,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import static com.loopj.android.http.AsyncHttpClient.LOG_TAG;
+import static placemate.placemate.R.id.imageView;
 
 public class ViewPlaceActivity extends AppCompatActivity {
 
@@ -46,6 +51,10 @@ public class ViewPlaceActivity extends AppCompatActivity {
     private TextView addressTxtView;
     private TextView placeNameTxtView;
     private Button getApiBtn;
+    private String venueImageURLPrefix;
+    private String venueImageURLSuffix;
+    private ImageView placeIconImgView;
+    private int imageSize = 64;
     private String result;
     private String clientId;
     private String clientSecret;
@@ -60,6 +69,7 @@ public class ViewPlaceActivity extends AppCompatActivity {
         setContentView(R.layout.activity_view_place);
 
         //get variables from layouts and strings file
+        placeIconImgView = (ImageView) findViewById(R.id.placeIconImgView);
         clientSecret = getResources().getString(R.string.client_secret);
         clientId = getResources().getString(R.string.client_id);
         mToolbar = (Toolbar) findViewById(R.id.nav_action);
@@ -162,8 +172,17 @@ public class ViewPlaceActivity extends AppCompatActivity {
                 venueName = venueDetails.getString("name");
                 venueAddress = venueDetails.getJSONObject("location").getString("address");
                 venuePhoneNumber = venueDetails.getJSONObject("contact").getString("phone");
+
+                //get icon image
+                JSONObject venueTmpImgObject = placeDetails.getJSONObject("response").getJSONObject("venue").getJSONArray("categories").getJSONObject(0).getJSONObject("icon");
+                venueImageURLPrefix = venueTmpImgObject.getString("prefix");
+                venueImageURLSuffix = venueTmpImgObject.getString("suffix");
+                String venueURL = venueImageURLPrefix + Integer.toString(imageSize) + venueImageURLSuffix;
+                Log.d("HEREEEE", venueURL);
+
+
                 //venueRating = venueDetails.getJSONObject("response").getString("rating");
-                //placeNameTxtView.setText(venueName);
+
                 setFields();
                 String testString = venueName + " " + venueAddress + " " + venueRating;
             } catch (JSONException e) {

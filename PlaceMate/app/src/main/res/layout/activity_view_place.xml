@@ -30,34 +30,28 @@
             android:id="@+id/placeNameTxtView"
             android:textSize="30sp" />
 
+        <ImageView
+            android:id="@+id/placeIconImgView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/placeNameTxtView"
+            android:layout_alignRight="@+id/placeNameTxtView"
+            android:layout_below="@+id/include2"
+            android:layout_marginTop="142dp"
+            app:srcCompat="@color/cast_mini_controller_main_background" />
 
-
-        <GridLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+        <EditText
+            android:id="@+id/addressTxtView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/include2">
+            android:layout_below="@+id/placeIconImgView"
+            android:layout_marginTop="129dp"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="Name" />
 
-            <TextView
-                android:text="Address"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="25sp"
-                android:layout_marginStart="25sp"
-                android:id="@+id/addressTxtView"
-                android:layout_below="@+id/include2" />
-
-            <TextView
-                android:text="Phone Number"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="25sp"
-                android:layout_marginStart="25sp"
-                android:layout_below="@+id/addressTxtView"
-                android:id="@+id/phoneTxtView" />
-
-        </GridLayout>
 
     </RelativeLayout>
 
