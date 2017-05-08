@@ -1,17 +1,40 @@
 package placemate.placemate;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
+
 
 public class MyPlacesActivity extends AppCompatActivity {
 
@@ -20,24 +43,35 @@ public class MyPlacesActivity extends AppCompatActivity {
     private ActionBarDrawerToggle mToggle;
     private Toolbar mToolbar;
     private NavigationView mNavigationView;
-    private JSONObject placeDetails;
-    private String json = "{ \"response\": { \"venue\": { \"id\": \"51d145718bbd51c5fe0f3132\", name\": \"PETER\" }}}";
+  
+    String result;
 
+    private String users_name;
+    private String users_email;
+    private String users_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Intent previousIntent = getIntent();
+
+        users_name = (String)previousIntent.getSerializableExtra("firstName");
+        users_email = (String)previousIntent.getSerializableExtra("email");
+        users_id = (String)previousIntent.getSerializableExtra("ID");
+
+
         setContentView(R.layout.activity_my_places);
         mToolbar = (Toolbar) findViewById(R.id.nav_action);
         setSupportActionBar(mToolbar);
         //get draw layout
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
-
+        final Button viewPlaceBtn = (Button)findViewById(R.id.viewPlaceBtn);
         //add toggle option to layout
         mDrawerLayout.addDrawerListener(mToggle);
         mToggle.syncState();
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //database helper
         databaseHelper = new DatabaseHelper(this);
@@ -61,19 +95,18 @@ public class MyPlacesActivity extends AppCompatActivity {
             }
         });
 
-        try {
-            placeDetails = new JSONObject(json);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
 
-        try {
-            JSONObject venueDetails = placeDetails.getJSONObject("response").getJSONObject("venue");
-            String venueName = venueDetails.getString("name");
-            toastMessage(venueName);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+
+        viewPlaceBtn.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View view) {
+                Intent changeToPlace = new Intent(getApplicationContext(), ViewPlaceActivity.class);
+                //add in place to change from map? id? url?
+                //changeToPlace.putExtra("weatherdetail", "PLACE");
+                startActivity(changeToPlace);
+            }
+        });
 
     }
 
@@ -85,6 +118,7 @@ public class MyPlacesActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 
 
     public void AddData(String newEntry){
