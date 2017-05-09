@@ -39,17 +39,10 @@
         <activity android:name=".MapViewActivity" />
 
         <activity android:name=".ViewPlaceActivity" />
-
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <activity
-            android:name=".LoginActivity2"
-            android:label="@string/title_activity_login2">
-
-
-        </activity>
     </application>
 
 </manifest>

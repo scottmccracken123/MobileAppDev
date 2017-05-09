@@ -15,12 +15,32 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.OptionalPendingResult;
+import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
+
         GoogleApiClient mGoogleApiClient;
         private static final int RC_SIGN_IN = 1000;
+        @Override
+        public void onStart(){
+                super.onStart();
 
+                OptionalPendingResult<GoogleSignInResult> checkIfIn = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
+
+                if(checkIfIn.isDone()) {
+
+                      GoogleSignInResult result = checkIfIn.get();
+                       GoogleSignInAccount account = result.getSignInAccount();
+                       Intent toMyPlaces = new Intent(LoginActivity.this, MyPlacesActivity.class);
+                       toMyPlaces.putExtra("firstName", account.getGivenName());
+                       toMyPlaces.putExtra("email", account.getEmail());
+                       toMyPlaces.putExtra("ID", account.getId());
+                       startActivity(toMyPlaces);
+
+                }
+        }
         @Override
         protected void onCreate(Bundle savedInstanceState) {
                 super.onCreate(savedInstanceState);
@@ -66,6 +86,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                        startActivity(toMyPlaces);
 
                }else{
+
                        // go to nasty page
                }
         }

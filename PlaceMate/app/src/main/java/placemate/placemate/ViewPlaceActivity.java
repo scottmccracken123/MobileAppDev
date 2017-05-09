@@ -19,6 +19,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -63,6 +65,8 @@ public class ViewPlaceActivity extends AppCompatActivity {
         //mDrawerLayout.addDrawerListener(mToggle);
         //mToggle.syncState();
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
 
 
         NavigationView nv = (NavigationView)findViewById(R.id.nav_view);
