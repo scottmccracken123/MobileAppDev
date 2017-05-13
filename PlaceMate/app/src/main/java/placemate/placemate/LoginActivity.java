@@ -30,15 +30,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 OptionalPendingResult<GoogleSignInResult> checkIfIn = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
 
                 if(checkIfIn.isDone()) {
-
-                      GoogleSignInResult result = checkIfIn.get();
-                       GoogleSignInAccount account = result.getSignInAccount();
-                       Intent toMyPlaces = new Intent(LoginActivity.this, MyPlacesActivity.class);
-                       toMyPlaces.putExtra("firstName", account.getGivenName());
-                       toMyPlaces.putExtra("email", account.getEmail());
-                       toMyPlaces.putExtra("ID", account.getId());
-                       startActivity(toMyPlaces);
-
+                    GoogleSignInResult result = checkIfIn.get();
+                    handleSignInResult(result);
                 }
         }
         @Override
@@ -80,9 +73,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                        GoogleSignInAccount account = result.getSignInAccount();
 
                        Intent toMyPlaces = new Intent(LoginActivity.this, MyPlacesActivity.class);
-                       toMyPlaces.putExtra("firstName", account.getGivenName());
-                       toMyPlaces.putExtra("email", account.getEmail());
-                        toMyPlaces.putExtra("ID", account.getId());
                        startActivity(toMyPlaces);
 
                }else{

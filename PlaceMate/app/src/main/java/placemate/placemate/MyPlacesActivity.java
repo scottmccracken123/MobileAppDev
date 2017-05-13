@@ -6,6 +6,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -16,6 +17,7 @@ import android.util.Log;
 import android.view.MenuItem;
 
 import android.view.View;
+import android.webkit.CookieSyncManager;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -23,11 +25,25 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.CookieManager;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import android.widget.TextView;
+
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.OptionalPendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.drive.Drive;
+import com.google.android.gms.plus.Plus;
+
+import org.w3c.dom.Text;
 
 import org.w3c.dom.Text;
 
@@ -38,22 +54,15 @@ public class MyPlacesActivity extends AppCompatActivity {
     private ActionBarDrawerToggle mToggle;
     private Toolbar mToolbar;
     private NavigationView mNavigationView;
-    String result;
-
-    private String users_name;
-    private String users_email;
-    private String users_id;
+    GoogleApiClient mGoogleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Intent previousIntent = getIntent();
-
-        users_name = (String)previousIntent.getSerializableExtra("firstName");
-        users_email = (String)previousIntent.getSerializableExtra("email");
-        users_id = (String)previousIntent.getSerializableExtra("ID");
-
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API)
+                .build();
 
         setContentView(R.layout.activity_my_places);
         mToolbar = (Toolbar) findViewById(R.id.nav_action);
@@ -79,7 +88,8 @@ public class MyPlacesActivity extends AppCompatActivity {
                     case (R.id.nav_map_view):
                         Intent changeToMap = new Intent(getApplicationContext(), MapViewActivity.class);
                         startActivity(changeToMap);
-
+                    case (R.id.nav_logout):
+                        signOut();
                 }
                 return true;
             }
@@ -101,7 +111,24 @@ public class MyPlacesActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mGoogleApiClient.connect();
+    }
 
+    private void signOut() {
+        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(Status status) {
+                        Intent loginPage = new Intent(MyPlacesActivity.this, LoginActivity.class);
+                        startActivity(loginPage);
+
+                    }
+                }
+        );
+    }
     //makes icon bar actually work
     public boolean onOptionsItemSelected(MenuItem item){
         if(mToggle.onOptionsItemSelected(item)){
