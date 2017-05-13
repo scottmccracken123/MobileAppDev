@@ -39,6 +39,7 @@ public class ViewPlaceActivity extends AppCompatActivity {
     private Toolbar mToolbar;
     private NavigationView mNavigationView;
     private JSONObject placeDetails;
+    private String venueID;
     private String venueName;
     private String venuePhoneNumber;
     private String venueRating;
@@ -50,8 +51,6 @@ public class ViewPlaceActivity extends AppCompatActivity {
     private String clientId;
     private String clientSecret;
     private String BASE_URL;
-    //needss to be passed in from map view
-    private String venueId = "51d145718bbd51c5fe0f3132";
 
 
     @Override
@@ -59,11 +58,15 @@ public class ViewPlaceActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_place);
 
+        Intent intent = getIntent();
+        venueID = intent.getStringExtra("venueID");
+        Log.v("venID", venueID);
+
         //get variables from layouts and strings file
         clientSecret = getResources().getString(R.string.client_secret);
         clientId = getResources().getString(R.string.client_id);
         mToolbar = (Toolbar) findViewById(R.id.nav_action);
-        BASE_URL = "https://api.foursquare.com/v2/venues/"+ venueId +"?client_id="+ clientId +"&client_secret="+ clientSecret +"&v=20170101";
+        BASE_URL = "https://api.foursquare.com/v2/venues/"+ venueID +"?client_id="+ clientId +"&client_secret="+ clientSecret +"&v=20170101";
 
 
 
@@ -160,15 +163,31 @@ public class ViewPlaceActivity extends AppCompatActivity {
             try {
                 JSONObject venueDetails = placeDetails.getJSONObject("response").getJSONObject("venue");
                 venueName = venueDetails.getString("name");
-                venueAddress = venueDetails.getJSONObject("location").getString("address");
-                venuePhoneNumber = venueDetails.getJSONObject("contact").getString("phone");
-                //venueRating = venueDetails.getJSONObject("response").getString("rating");
-                //placeNameTxtView.setText(venueName);
-                setFields();
-                String testString = venueName + " " + venueAddress + " " + venueRating;
+                Log.v("test", venueName);
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
+            try {
+                JSONObject venueDetails = placeDetails.getJSONObject("response").getJSONObject("venue");
+                venueAddress = venueDetails.getJSONObject("location").getString("address");
+                Log.v("test", venueAddress);
+                //venueRating = venueDetails.getJSONObject("response").getString("rating");
+                //placeNameTxtView.setText(venueName);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            try {
+                JSONObject venueDetails = placeDetails.getJSONObject("response").getJSONObject("venue");
+                venuePhoneNumber = venueDetails.getJSONObject("contact").getString("phone");
+                Log.v("test", venuePhoneNumber);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            setFields();
         }
 
         private void setFields(){
