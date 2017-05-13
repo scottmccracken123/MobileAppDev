@@ -68,8 +68,8 @@ public class ViewPlaceActivity extends AppCompatActivity {
     private String clientId;
     private String clientSecret;
     private String BASE_URL;
-    //needs to be passed in from map view
-    private String venueId = "51d145718bbd51c5fe0f3132";
+    private String venueId;
+
 
     private Button btnSavePlace;
 
@@ -79,6 +79,10 @@ public class ViewPlaceActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_place);
         btnSavePlace = (Button) findViewById(R.id.btnSavePlace);
+
+        Intent intent = getIntent();
+        venueId = intent.getStringExtra("venueID");
+        Log.v("venID", venueId);
 
         //get variables from layouts and strings file
         clientSecret = getResources().getString(R.string.client_secret);
@@ -103,7 +107,7 @@ public class ViewPlaceActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case (R.id.nav_my_places):
-                        Intent changeToLogin = new Intent(getApplicationContext(), LoginActivity.class);
+                        Intent changeToLogin = new Intent(getApplicationContext(), MyPlacesActivity.class);
                         startActivity(changeToLogin);
                     case (R.id.nav_map_view):
                         Intent changeToMap = new Intent(getApplicationContext(), MapViewActivity.class);
@@ -212,37 +216,70 @@ public class ViewPlaceActivity extends AppCompatActivity {
             try {
                 JSONObject venueDetails = placeDetails.getJSONObject("response").getJSONObject("venue");
                 venueName = venueDetails.getString("name");
-                venueAddress = venueDetails.getJSONObject("location").getString("address");
-                phoneNumber = venueDetails.getJSONObject("contact").getString("phone");
-                rating = venueDetails.getString("rating");
-                latitude = venueDetails.getJSONObject("location").getString("lat");
-                longitude = venueDetails.getJSONObject("location").getString("lng");
-                placeType = venueDetails.getJSONArray("categories").getJSONObject(0).getString("shortName");
-                //james
-                website = "www.google.com";
+                Log.v("test", venueName);
 
-                //different length address'
-                int length = venueDetails.getJSONObject("location").getJSONArray("formattedAddress").length();
-                addressOne = venueDetails.getJSONObject("location").getJSONArray("formattedAddress").getString(0);
-                if(length > 5) {
-                    addressTwo = venueDetails.getJSONObject("location").getJSONArray("formattedAddress").getString(1);
-                    city = venueDetails.getJSONObject("location").getJSONArray("formattedAddress").getString(2);
-                    postcode = venueDetails.getJSONObject("location").getJSONArray("formattedAddress").getString(4);
-                }
-                else {
-                    city = venueDetails.getJSONObject("location").getJSONArray("formattedAddress").getString(1);
-                    postcode = venueDetails.getJSONObject("location").getJSONArray("formattedAddress").getString(3);
-                }
-
-
-
-
-
-                //placeNameTxtView.setText(venueName);
-                setFields();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
+            try {
+                JSONObject venueDetails = placeDetails.getJSONObject("response").getJSONObject("venue");
+                venueAddress = venueDetails.getJSONObject("location").getString("address");
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            try {
+                JSONObject venueDetails = placeDetails.getJSONObject("response").getJSONObject("venue");
+                phoneNumber = venueDetails.getJSONObject("contact").getString("phone");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            try {
+                JSONObject venueDetails = placeDetails.getJSONObject("response").getJSONObject("venue");
+                rating = venueDetails.getString("rating");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            try {
+                JSONObject venueDetails = placeDetails.getJSONObject("response").getJSONObject("venue");
+                latitude = venueDetails.getJSONObject("location").getString("lat");
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            try {
+                JSONObject venueDetails = placeDetails.getJSONObject("response").getJSONObject("venue");
+                longitude = venueDetails.getJSONObject("location").getString("lng");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            try {
+                JSONObject venueDetails = placeDetails.getJSONObject("response").getJSONObject("venue");
+                placeType = venueDetails.getJSONArray("categories").getJSONObject(0).getString("shortName");
+                //james
+                website = "www.google.com";
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            try {
+                JSONObject venueDetails = placeDetails.getJSONObject("response").getJSONObject("venue");
+                //different length address'
+                int length = venueDetails.getJSONObject("location").getJSONArray("formattedAddress").length();
+                addressOne = venueDetails.getJSONObject("location").getJSONArray("formattedAddress").getString(0);
+                if (length > 5) {
+                    addressTwo = venueDetails.getJSONObject("location").getJSONArray("formattedAddress").getString(1);
+                    city = venueDetails.getJSONObject("location").getJSONArray("formattedAddress").getString(2);
+                    postcode = venueDetails.getJSONObject("location").getJSONArray("formattedAddress").getString(4);
+                } else {
+                    city = venueDetails.getJSONObject("location").getJSONArray("formattedAddress").getString(1);
+                    postcode = venueDetails.getJSONObject("location").getJSONArray("formattedAddress").getString(3);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            setFields();
         }
 
         private void setFields(){

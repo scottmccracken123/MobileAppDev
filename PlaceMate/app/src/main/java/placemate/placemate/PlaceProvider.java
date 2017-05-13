@@ -64,18 +64,18 @@ public class PlaceProvider extends ContentProvider{
     static final int DATABASE_VERSION = 1;
     static final String CREATE_DB_TABLE = " CREATE TABLE " + TABLE_NAME +
             " (id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            " name TEXT NOT NULL," +
-            " venueId TEXT NOT NULL," +
-            " addressOne TEXT NOT NULL," +
+            " name TEXT," +
+            " venueId TEXT," +
+            " addressOne TEXT," +
             " addressTwo TEXT," +
-            " city TEXT NOT NULL," +
-            " postcode TEXT NOT NULL," +
-            " phoneNumber TEXT NOT NULL," +
-            " longitude TEXT NOT NULL," +
-            " latitude TEXT NOT NULL," +
-            " rating TEXT NOT NULL," +
-            " placeType TEXT NOT NULL," +
-            " website TEXT NOT NULL" +
+            " city TEXT," +
+            " postcode TEXT," +
+            " phoneNumber TEXT," +
+            " longitude TEXT," +
+            " latitude TEXT," +
+            " rating TEXT," +
+            " placeType TEXT," +
+            " website TEXT" +
             ");";
 
     @Override
