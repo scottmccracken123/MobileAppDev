@@ -12,7 +12,6 @@
         android:theme="@android:style/Theme.NoTitleBar">
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
-
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
     </activity>
@@ -29,13 +28,19 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".LoginActivity">
+           <!-- <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter> -->
+        </activity>
+        <activity android:name=".MyPlacesActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MyPlacesActivity" />
         <activity android:name=".MapViewActivity" />
 
         <activity android:name=".ViewPlaceActivity" />
@@ -43,6 +48,14 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
+        <provider
+
+            android:authorities="placemate.placemate.PlaceProvider"
+            android:name=".PlaceProvider"
+            android:exported="true"
+            android:multiprocess="true"
+            ></provider>
 
     </application>
 

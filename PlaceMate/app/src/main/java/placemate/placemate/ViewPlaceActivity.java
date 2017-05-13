@@ -1,11 +1,13 @@
 package placemate.placemate;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -19,6 +21,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.nearby.messages.Strategy;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -29,6 +34,11 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
 import static com.loopj.android.http.AsyncHttpClient.LOG_TAG;
 
@@ -40,8 +50,16 @@ public class ViewPlaceActivity extends AppCompatActivity {
     private NavigationView mNavigationView;
     private JSONObject placeDetails;
     private String venueName;
-    private String venuePhoneNumber;
-    private String venueRating;
+    private String phoneNumber;
+    private String rating;
+    private String addressOne;
+    private String addressTwo;
+    private String city;
+    private String postcode;
+    private String longitude;
+    private String latitude;
+    private String placeType;
+    private String website;
     private String venueAddress;
     private TextView addressTxtView;
     private TextView placeNameTxtView;
@@ -50,14 +68,17 @@ public class ViewPlaceActivity extends AppCompatActivity {
     private String clientId;
     private String clientSecret;
     private String BASE_URL;
-    //needss to be passed in from map view
+    //needs to be passed in from map view
     private String venueId = "51d145718bbd51c5fe0f3132";
+
+    private Button btnSavePlace;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_place);
+        btnSavePlace = (Button) findViewById(R.id.btnSavePlace);
 
         //get variables from layouts and strings file
         clientSecret = getResources().getString(R.string.client_secret);
@@ -76,12 +97,6 @@ public class ViewPlaceActivity extends AppCompatActivity {
         addressTxtView = (TextView)findViewById(R.id.addressTxtView);
         placeNameTxtView = (TextView)findViewById(R.id.placeNameTxtView);
 
-        //add toggle option to layout (NEED TO RE ADD THIS)
-        //mDrawerLayout.addDrawerListener(mToggle);
-        //mToggle.syncState();
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-
         NavigationView nv = (NavigationView)findViewById(R.id.nav_view);
         nv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -98,6 +113,8 @@ public class ViewPlaceActivity extends AppCompatActivity {
             }
         });
 
+
+
     }
 
     @Override
@@ -105,6 +122,14 @@ public class ViewPlaceActivity extends AppCompatActivity {
         super.onStart();
         GetAPIData asyncTask = new GetAPIData();
         asyncTask.execute();
+
+        btnSavePlace.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v){
+                addData();
+            }
+        });
     }
 
     //makes icon bar actually work
@@ -113,6 +138,33 @@ public class ViewPlaceActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void addData(){
+
+        ContentValues values = new ContentValues();
+
+        values.put(PlaceProvider.name, venueName);
+        values.put(PlaceProvider.venueId, venueId);
+        values.put(PlaceProvider.addressOne, addressOne);
+        values.put(PlaceProvider.addressTwo, addressTwo);
+        values.put(PlaceProvider.city, city);
+        values.put(PlaceProvider.postcode, postcode);
+        values.put(PlaceProvider.phoneNumber, phoneNumber);
+        values.put(PlaceProvider.rating, rating);
+        values.put(PlaceProvider.longitude, longitude);
+        values.put(PlaceProvider.latitude, latitude);
+        values.put(PlaceProvider.website, website);
+        values.put(PlaceProvider.placeType, placeType);
+
+        Uri uri = getContentResolver().insert(PlaceProvider.CONTENT_URL, values);
+
+        toastMessage("New Place Added");
+    }
+
+    //makes toast with customisable message
+    private void toastMessage(String message){
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     private class GetAPIData extends AsyncTask<Void, String, String> {
@@ -161,11 +213,33 @@ public class ViewPlaceActivity extends AppCompatActivity {
                 JSONObject venueDetails = placeDetails.getJSONObject("response").getJSONObject("venue");
                 venueName = venueDetails.getString("name");
                 venueAddress = venueDetails.getJSONObject("location").getString("address");
-                venuePhoneNumber = venueDetails.getJSONObject("contact").getString("phone");
-                //venueRating = venueDetails.getJSONObject("response").getString("rating");
+                phoneNumber = venueDetails.getJSONObject("contact").getString("phone");
+                rating = venueDetails.getString("rating");
+                latitude = venueDetails.getJSONObject("location").getString("lat");
+                longitude = venueDetails.getJSONObject("location").getString("lng");
+                placeType = venueDetails.getJSONArray("categories").getJSONObject(0).getString("shortName");
+                //james
+                website = "www.google.com";
+
+                //different length address'
+                int length = venueDetails.getJSONObject("location").getJSONArray("formattedAddress").length();
+                addressOne = venueDetails.getJSONObject("location").getJSONArray("formattedAddress").getString(0);
+                if(length > 5) {
+                    addressTwo = venueDetails.getJSONObject("location").getJSONArray("formattedAddress").getString(1);
+                    city = venueDetails.getJSONObject("location").getJSONArray("formattedAddress").getString(2);
+                    postcode = venueDetails.getJSONObject("location").getJSONArray("formattedAddress").getString(4);
+                }
+                else {
+                    city = venueDetails.getJSONObject("location").getJSONArray("formattedAddress").getString(1);
+                    postcode = venueDetails.getJSONObject("location").getJSONArray("formattedAddress").getString(3);
+                }
+
+
+
+
+
                 //placeNameTxtView.setText(venueName);
                 setFields();
-                String testString = venueName + " " + venueAddress + " " + venueRating;
             } catch (JSONException e) {
                 e.printStackTrace();
             }

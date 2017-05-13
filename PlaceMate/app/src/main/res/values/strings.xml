@@ -25,4 +25,9 @@
     <string name="client_id">YBO033ISFIBQBHR0RJ3O3RWTRMMS4GGDFTLUDYEMWYZQZWYO</string>
     <string name="client_secret">KMXY35UEU1VV53RQ2OVHFD3ZPQNWSX2YSK2LQOAHAK4ETTXZ</string>
 
+    <!-- Strings for View Place Activity -->
+    <string name="place_name">Place Name</string>
+    <string name="place_address"></string>
+    <string name="place_phone_number"></string>
+
 </resources>
