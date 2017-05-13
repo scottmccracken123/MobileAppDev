@@ -222,16 +222,18 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
         private void displayMarkers(JSONObject placeDetails) {
             try {
                 JSONArray venues = placeDetails.getJSONObject("response").getJSONArray("venues");
-                for (int i = 0; i < venues.length(); i++) {
-                    //Log.v("log", venues.getJSONObject(i).toString());
-                    double lat = parseDouble(venues.getJSONObject(i).getJSONObject("location").getString("lat"));
-                    double lng = parseDouble(venues.getJSONObject(i).getJSONObject("location").getString("lng"));
-                    LatLng location = new LatLng(lat, lng);
+                if(venues.length() > 0) {
+                    for (int i = 0; i < venues.length(); i++) {
+                        //Log.v("log", venues.getJSONObject(i).toString());
+                        double lat = parseDouble(venues.getJSONObject(i).getJSONObject("location").getString("lat"));
+                        double lng = parseDouble(venues.getJSONObject(i).getJSONObject("location").getString("lng"));
+                        LatLng location = new LatLng(lat, lng);
 
-                    Marker marker = map.addMarker(new MarkerOptions().position(location)
-                            .title(venues.getJSONObject(i).getString("name")));
-                    marker.setTag(i);
-                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15));
+                        Marker marker = map.addMarker(new MarkerOptions().position(location)
+                                .title(venues.getJSONObject(i).getString("name")));
+                        marker.setTag(i);
+                        map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15));
+                    }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

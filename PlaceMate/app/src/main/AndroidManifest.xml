@@ -12,6 +12,7 @@
         android:theme="@android:style/Theme.NoTitleBar">
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
+
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
     </activity>
@@ -20,6 +21,7 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application
         android:allowBackup="true"
@@ -28,13 +30,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".LoginActivity">
-           <!-- <intent-filter>
+
+            <!--
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter> -->
+            </intent-filter>
+            -->
         </activity>
-        <activity android:name=".MyPlacesActivity"></activity>
+        <activity android:name=".MyPlacesActivity" />
         <activity android:name=".MapViewActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -52,13 +57,21 @@
             android:value="@string/google_maps_key" />
 
         <provider
-
-            android:authorities="placemate.placemate.PlaceProvider"
             android:name=".PlaceProvider"
+            android:authorities="placemate.placemate.PlaceProvider"
             android:exported="true"
-            android:multiprocess="true"
-            ></provider>
+            android:multiprocess="true" />
 
+        <receiver
+            android:name=".NetworkChangeReciever"
+            android:enabled="true"
+            android:exported="true">
+
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+
+        </receiver>
     </application>
 
 </manifest>
