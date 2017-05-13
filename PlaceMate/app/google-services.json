@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "576963640453",
-    "project_id": "placemate-5b2c6"
+    "project_number": "165449877109",
+    "project_id": "placemate-85dc9"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:576963640453:android:23b1956ffac7bc9e",
+        "mobilesdk_app_id": "1:165449877109:android:ef96793c30e3d0c9",
         "android_client_info": {
           "package_name": "placemate.placemate"
         }
       },
       "oauth_client": [
         {
-          "client_id": "576963640453-b1ee97apneuojjiv1vvrp0hg8ecbg412.apps.googleusercontent.com",
+          "client_id": "165449877109-eq2dbfta34c6k0q0r1o5cdbpnvkugds6.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "placemate.placemate",
-            "certificate_hash": "8441ee72fc383bf8694ecc4cfd8c564c1c49c33c"
+            "certificate_hash": "131582031cad827d1a5664fdb7679427cfb034a8"
           }
         },
         {
-          "client_id": "576963640453-pt5d0u0lguh7mjr7qdilcvst3el465l6.apps.googleusercontent.com",
+          "client_id": "165449877109-g1qrth3kuln3vca240iutl7t8ji07mog.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDuu5OAnhMkvU2iB_m2Zg0aj8ugdFObl4U"
+          "current_key": "AIzaSyCFSLNhsrnbenY0YoEG4DjvvWCevj7w0Ww"
         }
       ],
       "services": {
