@@ -1,6 +1,8 @@
 package placemate.placemate;
 
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 
@@ -9,13 +11,17 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 import android.net.Uri;
+import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.DrawerLayout;
@@ -23,6 +29,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
@@ -34,6 +41,7 @@ import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.maps.MapView;
 
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
@@ -55,6 +63,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+
 
 import android.widget.TextView;
 
@@ -79,7 +88,6 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_places);
 
@@ -97,7 +105,16 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
+        Handler handler = new Handler();
 
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                setNotification("It's almost dinner time", "Click on me to find somewhere to eat!");
+            }
+        }, 10000);
+
+        //setNotification("It's almost dinner time", "Click on me to find somewhere to eat!");
         //add toggle option to layout
 
 
@@ -165,13 +182,10 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
     }
 
     private void shareLink(String urlToShare) {
-
-        Intent intent = new Intent(Intent.ACTION_SEND); // change action  
+        Intent intent = new Intent(Intent.ACTION_SEND); // change action
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_TEXT, urlToShare);
-
         boolean facebookAppFound = false;
-
         List<ResolveInfo> matches = getPackageManager().queryIntentActivities(intent, 0);
             for (ResolveInfo info:matches) {
                 if (info.activityInfo.packageName.toLowerCase().startsWith("com.facebook.katana")) {
@@ -185,7 +199,28 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
             intent = new Intent(Intent.ACTION_VIEW, Uri.parse(shareUrl));
         }
         startActivity(intent);
+    }
 
+    public void setNotification(String title, String content) {
+
+        NotificationCompat.Builder notBuilder = new NotificationCompat.Builder(this);
+        notBuilder.setContentTitle(title);
+        notBuilder.setContentText(content);
+        notBuilder.setSmallIcon(android.R.drawable.ic_menu_compass);
+        notBuilder.setLights(Color.MAGENTA, 2000, 4000);
+        notBuilder.setAutoCancel(true);
+
+        // Remove if we're not notifying them of saved places.
+
+        Intent moveThemFromNot = new Intent(this, MapViewActivity.class);
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this);
+        taskStackBuilder.addParentStack(MapViewActivity.class);
+        taskStackBuilder.addNextIntent(moveThemFromNot);
+        PendingIntent movingThePendingIntent = taskStackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        notBuilder.setContentIntent(movingThePendingIntent);
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(0, notBuilder.build());
 
     }
 
