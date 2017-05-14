@@ -18,46 +18,49 @@
         android:paddingTop="@dimen/activity_vertical_margin"
         tools:context="placemate.placemate.ViewPlaceActivity">
 
-        <include layout="@layout/navigation_action"
+        <include
+            layout="@layout/navigation_action"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/include2"></include>
+            android:id="@+id/include2" />
 
         <TextView
-            android:text="Place Name"
+            android:text="@string/place_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/placeNameTxtView"
             android:textSize="30sp" />
 
+        <Button
+            android:text="Save Place"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="25sp"
+            android:layout_marginStart="25sp"
+            android:layout_below="@+id/phoneTxtView"
+            android:id="@+id/btnSavePlace"
+
+            />
 
 
-        <GridLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/include2">
+        <TextView
+            android:text="@string/place_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="25sp"
+            android:layout_marginStart="25sp"
+            android:id="@+id/addressTxtView"
+            android:layout_below="@+id/include2" />
 
-            <TextView
-                android:text="Address"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="25sp"
-                android:layout_marginStart="25sp"
-                android:id="@+id/addressTxtView"
-                android:layout_below="@+id/include2" />
+        <TextView
+            android:text="@string/place_phone_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="25sp"
+            android:layout_marginStart="25sp"
+            android:layout_below="@+id/addressTxtView"
+            android:id="@+id/phoneTxtView" />
 
-            <TextView
-                android:text="Phone Number"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="25sp"
-                android:layout_marginStart="25sp"
-                android:layout_below="@+id/addressTxtView"
-                android:id="@+id/phoneTxtView" />
-
-        </GridLayout>
 
     </RelativeLayout>
 
@@ -67,5 +70,6 @@
         android:layout_height="match_parent"
         app:menu="@menu/navigation_menu"
         android:layout_gravity="start"
-        app:headerLayout="@layout/navigation_header"></android.support.design.widget.NavigationView>
+        app:headerLayout="@layout/navigation_header"/>
+
 </android.support.v4.widget.DrawerLayout>
