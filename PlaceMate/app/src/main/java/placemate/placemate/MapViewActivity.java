@@ -165,7 +165,7 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
             return;
         }
 
-        locationManager.requestLocationUpdates("gps", 1000, 50, listener);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 50, listener);
 //        // this code won't execute IF permissions are not allowed, because in the line above there is return statement.
 //        getLocationBtn.setOnClickListener(new View.OnClickListener() {
 //            @Override
