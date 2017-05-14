@@ -45,6 +45,15 @@
             android:layout_marginTop="17dp"
             android:id="@+id/viewPlaceBtn" />
 
+        <Button
+            android:id="@+id/shareFB"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="35dp"
+            android:text="Share Facebook" />
+
     </RelativeLayout>
 
     <android.support.design.widget.NavigationView
