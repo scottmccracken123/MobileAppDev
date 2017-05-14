@@ -69,8 +69,6 @@ public class ViewPlaceActivity extends AppCompatActivity {
     private String clientSecret;
     private String BASE_URL;
     private String venueId;
-
-
     private Button btnSavePlace;
 
 
@@ -80,8 +78,11 @@ public class ViewPlaceActivity extends AppCompatActivity {
         setContentView(R.layout.activity_view_place);
         btnSavePlace = (Button) findViewById(R.id.btnSavePlace);
 
+        //used to pull intent through from map view
+
         Intent intent = getIntent();
         venueId = intent.getStringExtra("venueID");
+        //venueId = "51d145718bbd51c5fe0f3132";
         Log.v("venID", venueId);
 
         //get variables from layouts and strings file
@@ -101,17 +102,24 @@ public class ViewPlaceActivity extends AppCompatActivity {
         addressTxtView = (TextView)findViewById(R.id.addressTxtView);
         placeNameTxtView = (TextView)findViewById(R.id.placeNameTxtView);
 
-        NavigationView nv = (NavigationView)findViewById(R.id.nav_view);
+        //navigation switch for drawer menu
+        NavigationView nv = (NavigationView) findViewById(R.id.nav_view);
         nv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case (R.id.nav_my_places):
-                        Intent changeToLogin = new Intent(getApplicationContext(), MyPlacesActivity.class);
-                        startActivity(changeToLogin);
+                        Intent changeToMyPlaces = new Intent(getApplicationContext(), MyPlacesActivity.class);
+                        startActivity(changeToMyPlaces);
+                        break;
                     case (R.id.nav_map_view):
                         Intent changeToMap = new Intent(getApplicationContext(), MapViewActivity.class);
                         startActivity(changeToMap);
+                        break;
+                    case (R.id.nav_logout):
+                        //code for actually logging out needs to be implemented
+                        Intent changeToLogout = new Intent(getApplicationContext(), LoginActivity.class);
+                        break;
                 }
                 return true;
             }
