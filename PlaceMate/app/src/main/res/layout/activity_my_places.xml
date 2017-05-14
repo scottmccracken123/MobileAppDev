@@ -48,7 +48,6 @@
             android:id="@+id/savedPlacesList"
             android:layout_below="@+id/viewPlaceBtn"/>
 
-
     </RelativeLayout>
 
 

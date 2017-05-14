@@ -1,13 +1,18 @@
 package placemate.placemate;
 
+
+import android.content.Intent;
+import android.content.pm.ResolveInfo;
+
+
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
@@ -19,8 +24,17 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
+
+import java.util.List;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -61,6 +75,7 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mToggle;
 
+    GoogleApiClient mGoogleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +83,9 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_places);
 
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API)
+                .build();
 
         //navigation switch for drawer menu
 
@@ -78,6 +96,9 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
         if(actionBar != null){
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+
+
+        //add toggle option to layout
 
 
         NavigationView nv = (NavigationView) findViewById(R.id.nav_view);
@@ -94,8 +115,7 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
                         startActivity(changeToMap);
                         break;
                     case (R.id.nav_logout):
-                        //code for actually logging out needs to be implemented
-                        Intent changeToLogout = new Intent(getApplicationContext(), LoginActivity.class);
+                        signOut();
                         break;
                 }
                 return true;
@@ -125,9 +145,49 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mGoogleApiClient.connect();
+    }
+
+    private void signOut() {
+        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(Status status) {
+                        Intent loginPage = new Intent(MyPlacesActivity.this, LoginActivity.class);
+                        startActivity(loginPage);
+
+                    }
+                }
+        );
+    }
+
+    private void shareLink(String urlToShare) {
+
+        Intent intent = new Intent(Intent.ACTION_SEND); // change action  
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, urlToShare);
+
+        boolean facebookAppFound = false;
+
+        List<ResolveInfo> matches = getPackageManager().queryIntentActivities(intent, 0);
+            for (ResolveInfo info:matches) {
+                if (info.activityInfo.packageName.toLowerCase().startsWith("com.facebook.katana")) {
+                    intent.setPackage(info.activityInfo.packageName);
+                    facebookAppFound = true;
+                    break;
+                }
+            }
+        if (!facebookAppFound) {
+            String shareUrl = "https://www.facebook.com/sharer/sharer.php?u=" + urlToShare;
+            intent = new Intent(Intent.ACTION_VIEW, Uri.parse(shareUrl));
+        }
+        startActivity(intent);
 
 
-
+    }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {

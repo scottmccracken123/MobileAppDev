@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.nearby.messages.Strategy;
 
@@ -100,6 +101,7 @@ public class ViewPlaceActivity extends AppCompatActivity {
         mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
         addressTxtView = (TextView)findViewById(R.id.addressTxtView);
         placeNameTxtView = (TextView)findViewById(R.id.placeNameTxtView);
+
 
         //navigation switch for drawer menu
         NavigationView nv = (NavigationView) findViewById(R.id.nav_view);
