@@ -14,23 +14,19 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.MenuItem;
 
 import java.util.List;
-import android.view.View;
 import android.widget.Button;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import java.util.ArrayList;
 
 
 public class MyPlacesActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -94,7 +90,7 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
 
 
         listView = (ListView) findViewById(R.id.savedPlacesList);
-        viewPlaceBtn = (Button) findViewById(R.id.viewPlaceBtn);
+        /*viewPlaceBtn = (Button) findViewById(R.id.viewPlaceBtn);*/
 
 
         //initialise resolver
@@ -102,16 +98,6 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
 
         //initialising custom loader
         getSupportLoaderManager().initLoader(LOADER_ID, null, this);
-
-        //view place button - to be removed
-        viewPlaceBtn.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                Intent changeToViewPlace = new Intent(getApplicationContext(), ViewPlaceActivity.class);
-                startActivity(changeToViewPlace);
-            }
-        });
 
     }
 
@@ -178,16 +164,16 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 
-        ArrayList<String> listData = new ArrayList<>();
-        while(data.moveToNext()){
-            //add data pulled from db to list
-            listData.add(data.getString(0));
-            listData.add(data.getString(1));
-        }
+
+        String[] fromColumns = new String[] {"name", "placeType","_id"};
+        int[] toViews = {R.id.placeName, R.id.placeType, R.id.duration};
+
+        SimpleCursorAdapter myCursorAdapter;
+        myCursorAdapter = new SimpleCursorAdapter(getBaseContext(),R.layout.list_row, data, fromColumns, toViews, 0);
 
         //create list adapter and set this
-        ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listData);
-        listView.setAdapter(adapter);
+        ListView listView2 = (ListView) findViewById(R.id.savedPlacesList);
+        listView.setAdapter(myCursorAdapter);
     }
 
     @Override

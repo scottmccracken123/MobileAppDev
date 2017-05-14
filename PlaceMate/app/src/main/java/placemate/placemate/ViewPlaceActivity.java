@@ -102,6 +102,7 @@ public class ViewPlaceActivity extends AppCompatActivity {
         placeNameTxtView = (TextView)findViewById(R.id.placeNameTxtView);
 
 
+
         //navigation switch for drawer menu
         NavigationView nv = (NavigationView) findViewById(R.id.nav_view);
         nv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
