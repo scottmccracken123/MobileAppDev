@@ -95,8 +95,7 @@ public class ViewPlaceActivity extends AppCompatActivity {
 
 
 
-        //get draw layout (side bar layout)
-        setSupportActionBar(mToolbar);
+        
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
         addressTxtView = (TextView)findViewById(R.id.addressTxtView);
