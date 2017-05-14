@@ -27,7 +27,6 @@
             android:text="TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/include"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_marginLeft="154dp"
@@ -40,9 +39,6 @@
             android:text="View Place"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/getApiBtn"
-            android:layout_alignLeft="@+id/getApiBtn"
-            android:layout_alignStart="@+id/getApiBtn"
             android:layout_marginTop="17dp"
             android:id="@+id/viewPlaceBtn" />
 
@@ -62,6 +58,6 @@
         android:layout_height="match_parent"
         app:menu="@menu/navigation_menu"
         android:layout_gravity="start"
-        app:headerLayout="@layout/navigation_header"/>
+        />
 
 </android.support.v4.widget.DrawerLayout>
