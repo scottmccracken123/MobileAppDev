@@ -98,7 +98,6 @@ public class ViewPlaceActivity extends AppCompatActivity {
         setSupportActionBar(mToolbar);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
-        getApiBtn = (Button)findViewById(R.id.getApiBtn);
         addressTxtView = (TextView)findViewById(R.id.addressTxtView);
         placeNameTxtView = (TextView)findViewById(R.id.placeNameTxtView);
 

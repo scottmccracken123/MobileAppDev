@@ -15,10 +15,15 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -64,14 +69,21 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
     private String result;
     private String BASE_URL;
     private GoogleMap map;
+    //nav variable intialisation
+    private DrawerLayout mDrawerLayout;
+    private ActionBarDrawerToggle mToggle;
 
 
     @Override
     protected void onCreate( Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
         setContentView(R.layout.activity_map_view);
+
+        //navigation switch for drawer menu
+
+        //navigation switch for drawer menu
+
+
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -119,6 +131,39 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
             }
         };
         getLocation();
+
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
+        mDrawerLayout.addDrawerListener(mToggle);
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null){
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
+
+        NavigationView nv = (NavigationView) findViewById(R.id.nav_view);
+        nv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case (R.id.nav_my_places):
+                        Intent changeToMyPlaces = new Intent(getApplicationContext(), MyPlacesActivity.class);
+                        startActivity(changeToMyPlaces);
+                        break;
+                    case (R.id.nav_map_view):
+                        Intent changeToMap = new Intent(getApplicationContext(), MapViewActivity.class);
+                        startActivity(changeToMap);
+                        break;
+                    case (R.id.nav_logout):
+                        //code for actually logging out needs to be implemented
+                        Intent changeToLogout = new Intent(getApplicationContext(), LoginActivity.class);
+                        break;
+                }
+                return true;
+            }
+        });
+
+
     }
 
     @Override
