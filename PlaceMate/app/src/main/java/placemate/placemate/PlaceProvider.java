@@ -26,7 +26,6 @@ public class PlaceProvider extends ContentProvider{
     // The Java namespace for the Content Provider
     static final String PROVIDER_NAME = "placemate.placemate.PlaceProvider";
     static final String CP_NAME = "cpplace";
-
     // Assigned to a content provider so any application can access it
     // cpcontacts is the virtual directory in the provider
     static final String URL = "content://" + PROVIDER_NAME + "/" + CP_NAME;
@@ -229,68 +228,5 @@ public class PlaceProvider extends ContentProvider{
         }
     }
 
-    /*public class DatabaseHelper extends SQLiteOpenHelper {
-
-        private static final String TAG = "DatabaseHelper";
-
-        //private static final String TABLE_NAME = "saved_places_table";
-        private static final String COL0 = "ID";
-        private static final String COL1 = "PlaceName";
-        private static final String COL2 = "Address";
-        private static final String COL3 = "PhoneNumber";
-        private static final String COL4 = "Rating";
-
-
-        public DatabaseHelper(Context context) {
-            super(context, TABLE_NAME, null, 1);
-        }
-
-        @Override
-        public void onCreate(SQLiteDatabase db) {
-            String createTable = "CREATE TABLE " + TABLE_NAME + " (" + COL0 + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COL1 +" TEXT, " + COL2 + " TEXT)";
-
-            db.execSQL(createTable);
-        }
-
-        @Override
-        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            db.execSQL("DROP IF TABLE EXISTS " + TABLE_NAME);
-            onCreate(db);
-        }
-
-
-        public boolean addData(ArrayList<String> items) {
-            SQLiteDatabase db = this.getWritableDatabase();
-            ContentValues contentValues = new ContentValues();
-
-            contentValues.put(COL1, items.get(0).toString());
-            Log.d(TAG, "addData: Adding " + items.get(0).toString() + " to " + TABLE_NAME);
-
-            contentValues.put(COL2, items.get(1).toString());
-            Log.d(TAG, "addData: Adding " + items.get(1).toString() + " to " + TABLE_NAME);
-
-            //contentValues.put(COL3, items.get(2));
-            //Log.d(TAG, "addData: Adding " + items.get(2) + " to " + TABLE_NAME);
-
-            //contentValues.put(COL4, items.get(3));
-            //Log.d(TAG, "addData: Adding " + items.get(3) + " to " + TABLE_NAME);
-
-            long result = db.insert(TABLE_NAME, null, contentValues);
-
-            //if data is inserted incorrectly result will return -1
-            if(result == -1) {
-                return false;
-            } else {
-                return true;
-            }
-        }
-
-        public Cursor getData(){
-            SQLiteDatabase db = this.getWritableDatabase();
-            String query = "SELECT * FROM " + TABLE_NAME;
-            Cursor data = db.rawQuery(query, null);
-            return data;
-        }
-    }*/
 
 }

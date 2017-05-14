@@ -14,6 +14,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -46,15 +47,20 @@ import android.widget.TextView;
 import org.w3c.dom.Text;
 
 
-public class MyPlacesActivity extends FragmentActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class MyPlacesActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+
+
 
     private static final String TAG = "MyPlacesActivity";
     private static final int LOADER_ID = 0x01;
-
     private ListView listView;
     private Button viewPlaceBtn;
-
     ContentResolver resolver;
+
+    //navigation layout variables
+    private DrawerLayout mDrawerLayout;
+    private ActionBarDrawerToggle mToggle;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,25 +68,17 @@ public class MyPlacesActivity extends FragmentActivity implements LoaderManager.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_places);
 
-        listView = (ListView) findViewById(R.id.savedPlacesList);
-        viewPlaceBtn = (Button) findViewById(R.id.viewPlaceBtn);
 
-        //initialise resolver
-        resolver = getContentResolver();
+        //navigation switch for drawer menu
 
-        //initialising custom loader
-        getSupportLoaderManager().initLoader(LOADER_ID, null, this);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
+        mDrawerLayout.addDrawerListener(mToggle);
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null){
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
-        viewPlaceBtn.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                Intent changeToViewPlace = new Intent(getApplicationContext(), ViewPlaceActivity.class);
-                startActivity(changeToViewPlace);
-            }
-        });
-
-        /////////////////////////////////////////////////////////////////////
 
         NavigationView nv = (NavigationView) findViewById(R.id.nav_view);
         nv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -90,15 +88,46 @@ public class MyPlacesActivity extends FragmentActivity implements LoaderManager.
                     case (R.id.nav_my_places):
                         Intent changeToMyPlaces = new Intent(getApplicationContext(), MyPlacesActivity.class);
                         startActivity(changeToMyPlaces);
+                        break;
                     case (R.id.nav_map_view):
                         Intent changeToMap = new Intent(getApplicationContext(), MapViewActivity.class);
                         startActivity(changeToMap);
-
+                        break;
+                    case (R.id.nav_logout):
+                        //code for actually logging out needs to be implemented
+                        Intent changeToLogout = new Intent(getApplicationContext(), LoginActivity.class);
+                        break;
                 }
                 return true;
             }
         });
+
+
+        listView = (ListView) findViewById(R.id.savedPlacesList);
+        viewPlaceBtn = (Button) findViewById(R.id.viewPlaceBtn);
+
+
+        //initialise resolver
+        resolver = getContentResolver();
+
+        //initialising custom loader
+        getSupportLoaderManager().initLoader(LOADER_ID, null, this);
+
+        //view place button - to be removed
+        viewPlaceBtn.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent changeToViewPlace = new Intent(getApplicationContext(), ViewPlaceActivity.class);
+                startActivity(changeToViewPlace);
+            }
+        });
+
     }
+
+
+
+
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {

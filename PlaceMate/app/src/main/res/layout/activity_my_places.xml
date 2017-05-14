@@ -21,7 +21,7 @@
         <include layout="@layout/navigation_action"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/include2" />
+            android:id="@+id/nav_action" />
 
         <TextView
             android:text="TextView"
