@@ -78,6 +78,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                }else{
 
                        // go to nasty page
+                       Toast.makeText(getApplicationContext(), "Error logging in through Google", Toast.LENGTH_SHORT).show();
+
                }
         }
 

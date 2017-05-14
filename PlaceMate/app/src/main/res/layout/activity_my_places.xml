@@ -21,7 +21,7 @@
         <include layout="@layout/navigation_action"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/include2"></include>
+            android:id="@+id/nav_action" />
 
         <TextView
             android:text="TextView"
@@ -35,6 +35,7 @@
             android:layout_marginTop="272dp"
             android:id="@+id/textView" />
 
+
         <Button
             android:text="View Place"
             android:layout_width="wrap_content"
@@ -45,16 +46,14 @@
             android:layout_marginTop="17dp"
             android:id="@+id/viewPlaceBtn" />
 
-        <Button
-            android:id="@+id/shareFB"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/textView"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="35dp"
-            android:text="Share Facebook" />
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/savedPlacesList"
+            android:layout_below="@+id/viewPlaceBtn"/>
 
     </RelativeLayout>
+
 
     <android.support.design.widget.NavigationView
         android:layout_width="match_parent"
@@ -62,5 +61,6 @@
         android:layout_height="match_parent"
         app:menu="@menu/navigation_menu"
         android:layout_gravity="start"
-        app:headerLayout="@layout/navigation_header"></android.support.design.widget.NavigationView>
+        app:headerLayout="@layout/navigation_header"/>
+
 </android.support.v4.widget.DrawerLayout>
