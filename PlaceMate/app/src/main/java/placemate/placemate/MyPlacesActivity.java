@@ -6,15 +6,10 @@ import android.content.pm.ResolveInfo;
 
 
 import android.content.ContentResolver;
-import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 
 import android.net.Uri;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -23,42 +18,19 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import java.util.List;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
-
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
-
-import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 
 public class MyPlacesActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -88,14 +60,12 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
                 .build();
 
         //navigation switch for drawer menu
-
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
         mDrawerLayout.addDrawerListener(mToggle);
-        ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null){
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+        mToggle.syncState();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
 
         //add toggle option to layout
@@ -143,6 +113,15 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
             }
         });
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(mToggle.onOptionsItemSelected(item)){
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -216,12 +195,4 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
 
     }
 
-
-    //makes icon bar actually work
-    //public boolean onOptionsItemSelected(MenuItem item){
-     //   if(mToggle.onOptionsItemSelected(item)){
-     //       return true;
-    //    }
-    //    return super.onOptionsItemSelected(item);
-    //}
 }
