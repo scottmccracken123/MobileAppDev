@@ -1,4 +1,6 @@
 <resources>
+
+    <!-- General app strings -->
     <string name="app_name">PlaceMate</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -18,4 +20,14 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+
+    <!-- Strings for FourSquare API -->
+    <string name="client_id">YBO033ISFIBQBHR0RJ3O3RWTRMMS4GGDFTLUDYEMWYZQZWYO</string>
+    <string name="client_secret">KMXY35UEU1VV53RQ2OVHFD3ZPQNWSX2YSK2LQOAHAK4ETTXZ</string>
+
+    <!-- Strings for View Place Activity -->
+    <string name="place_name">Place Name</string>
+    <string name="place_address"></string>
+    <string name="place_phone_number"></string>
+
 </resources>

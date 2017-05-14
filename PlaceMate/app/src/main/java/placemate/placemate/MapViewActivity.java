@@ -2,6 +2,7 @@ package placemate.placemate;
 
 
 import android.Manifest;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -17,16 +18,24 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
-
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,8 +46,10 @@ import java.net.URL;
 
 
 import static android.provider.UserDictionary.Words.APP_ID;
+import static com.loopj.android.http.AsyncHttpClient.LOG_TAG;
+import static java.lang.Double.parseDouble;
 
-public class MapViewActivity extends AppCompatActivity{
+public class MapViewActivity extends AppCompatActivity implements OnMapReadyCallback, OnMarkerClickListener {
     private Button getLocationBtn;
     private TextView locationTxtView;
     private LocationManager locationManager;
@@ -47,11 +58,12 @@ public class MapViewActivity extends AppCompatActivity{
     private double longitude;
     private double latitude;
     private JSONObject placeDetails;
-
-
+    private String clientId;
+    private String clientSecret;
     private Button getApiBtn;
     private String result;
-
+    private String BASE_URL;
+    private GoogleMap map;
 
 
     @Override
@@ -61,18 +73,31 @@ public class MapViewActivity extends AppCompatActivity{
 
         setContentView(R.layout.activity_map_view);
 
-        locationTxtView = (TextView) findViewById(R.id.longitudeTxt);
-        getLocationBtn = (Button) findViewById(R.id.getLocationBtn);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+
+        // get variables form layout and strings
+//        locationTxtView = (TextView) findViewById(R.id.longitudeTxt);
+//        getLocationBtn = (Button) findViewById(R.id.getLocationBtn);
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        clientSecret = getResources().getString(R.string.client_secret);
+        clientId = getResources().getString(R.string.client_id);
 
 
         listener = new LocationListener() {
 
+
             @Override
             public void onLocationChanged(Location location) {
+
+                //get long and lat
                 longitude = location.getLongitude();
                 latitude = location.getLatitude();
-                locationTxtView.append("\n " + longitude + " " + latitude);
+
+                //API URL
+                BASE_URL = "https://api.foursquare.com/v2/venues/search?ll=" + latitude +"," + longitude + "&categoryId=4d4b7105d754a06374d81259,4d4b7105d754a06376d81259&radius=1000&client_id=" + clientId + "&client_secret=" +clientSecret+ "&v=20170101";
+                //locationTxtView.append("\n " + longitude + " " + latitude);
                 GetNearAPIData asyncTask = new GetNearAPIData();
                 asyncTask.execute();
             }
@@ -93,21 +118,36 @@ public class MapViewActivity extends AppCompatActivity{
                 startActivity(i);
             }
         };
-
-        configure_button();
-
-
-
-
+        getLocation();
     }
 
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        map = googleMap;
+        googleMap.setOnMarkerClickListener(this);
+//        googleMap.addMarker(new MarkerOptions()
+//                .position(new LatLng(52.7721, 1.2062))
+//                .title("Loughborough"));
+    }
 
+    @Override
+    public boolean onMarkerClick(final Marker marker) {
+        try {
+            int venueArrayId = (int) marker.getTag();
+            Intent toViewPlace = new Intent(this, ViewPlaceActivity.class);
+            toViewPlace.putExtra("venueID", placeDetails.getJSONObject("response").getJSONArray("venues").getJSONObject(venueArrayId).getString("id"));
+            startActivity(toViewPlace);
+        } catch(JSONException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode){
             case permissionNumber:
-                configure_button();
                 break;
             default:
                 break;
@@ -115,7 +155,7 @@ public class MapViewActivity extends AppCompatActivity{
     }
 
 
-    void configure_button(){
+    void getLocation(){
         // first check for permissions
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -124,14 +164,17 @@ public class MapViewActivity extends AppCompatActivity{
             }
             return;
         }
-        // this code won't execute IF permissions are not allowed, because in the line above there is return statement.
-        getLocationBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //noinspection MissingPermission
-                locationManager.requestLocationUpdates("gps", 5000, 0, listener);
-            }
-        });
+
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 50, listener);
+//        // this code won't execute IF permissions are not allowed, because in the line above there is return statement.
+//        getLocationBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                //noinspection MissingPermission
+//
+//
+//            }
+//        });
     }
 
     private class GetNearAPIData extends AsyncTask<Void, String, String> {
@@ -141,7 +184,7 @@ public class MapViewActivity extends AppCompatActivity{
 
             //create a URI
             //final String FORECAST_BASE_URL="https://api.foursquare.com/v2/venues/51d145718bbd51c5fe0f3132?client_id=YBO033ISFIBQBHR0RJ3O3RWTRMMS4GGDFTLUDYEMWYZQZWYO&client_secret=KMXY35UEU1VV53RQ2OVHFD3ZPQNWSX2YSK2LQOAHAK4ETTXZ&ll=51.513144,-0.124396&radius=2520&section=drinks&time=any&v=20150409&m=foursquare&limit=50&sortByDistance=1&offset=0";
-            final String FORECAST_BASE_URL = "https://api.foursquare.com/v2/venues/search?ll=" + latitude +"," + longitude + "&client_id=YBO033ISFIBQBHR0RJ3O3RWTRMMS4GGDFTLUDYEMWYZQZWYO&client_secret=KMXY35UEU1VV53RQ2OVHFD3ZPQNWSX2YSK2LQOAHAK4ETTXZ&v=20150409";
+            //final String FORECAST_BASE_URL = "https://api.foursquare.com/v2/venues/search?ll=" + latitude +"," + longitude + "&client_id=YBO033ISFIBQBHR0RJ3O3RWTRMMS4GGDFTLUDYEMWYZQZWYO&client_secret=KMXY35UEU1VV53RQ2OVHFD3ZPQNWSX2YSK2LQOAHAK4ETTXZ&v=20150409";
 
             //check connectivity
             ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -150,7 +193,8 @@ public class MapViewActivity extends AppCompatActivity{
                 //if the device is connected to a network, fetch data
 
                 //call the helper function to get data from the uri
-                result = GET(FORECAST_BASE_URL);
+                Log.d(LOG_TAG, BASE_URL);
+                result = GET(BASE_URL);
                 //Log.v(LOG_TAG, result);
 
 
@@ -166,14 +210,35 @@ public class MapViewActivity extends AppCompatActivity{
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();
+            //Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();
             try {
                 placeDetails = new JSONObject(s);
+                displayMarkers(placeDetails);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
 
+        private void displayMarkers(JSONObject placeDetails) {
+            try {
+                JSONArray venues = placeDetails.getJSONObject("response").getJSONArray("venues");
+                if(venues.length() > 0) {
+                    for (int i = 0; i < venues.length(); i++) {
+                        //Log.v("log", venues.getJSONObject(i).toString());
+                        double lat = parseDouble(venues.getJSONObject(i).getJSONObject("location").getString("lat"));
+                        double lng = parseDouble(venues.getJSONObject(i).getJSONObject("location").getString("lng"));
+                        LatLng location = new LatLng(lat, lng);
+
+                        Marker marker = map.addMarker(new MarkerOptions().position(location)
+                                .title(venues.getJSONObject(i).getString("name")));
+                        marker.setTag(i);
+                        map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15));
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
 
 
         //The helper function that makes an HTTP GET request using the url passed in as the parameter
@@ -224,5 +289,4 @@ public class MapViewActivity extends AppCompatActivity{
         }
 
     }
-
 }
