@@ -63,7 +63,7 @@ public class PlaceProvider extends ContentProvider{
     static final String TABLE_NAME = "Places";
     static final int DATABASE_VERSION = 1;
     static final String CREATE_DB_TABLE = " CREATE TABLE " + TABLE_NAME +
-            " (id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
             " name TEXT," +
             " venueId TEXT," +
             " addressOne TEXT," +

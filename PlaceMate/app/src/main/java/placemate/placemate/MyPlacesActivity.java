@@ -8,17 +8,20 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.provider.ContactsContract;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
@@ -40,6 +43,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 import android.widget.TextView;
 
@@ -63,7 +67,7 @@ public class MyPlacesActivity extends FragmentActivity implements LoaderManager.
         setContentView(R.layout.activity_my_places);
 
         listView = (ListView) findViewById(R.id.savedPlacesList);
-        viewPlaceBtn = (Button) findViewById(R.id.viewPlaceBtn);
+        /*viewPlaceBtn = (Button) findViewById(R.id.viewPlaceBtn);*/
 
         //initialise resolver
         resolver = getContentResolver();
@@ -71,14 +75,14 @@ public class MyPlacesActivity extends FragmentActivity implements LoaderManager.
         //initialising custom loader
         getSupportLoaderManager().initLoader(LOADER_ID, null, this);
 
-        viewPlaceBtn.setOnClickListener(new View.OnClickListener() {
+        /*viewPlaceBtn.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 Intent changeToViewPlace = new Intent(getApplicationContext(), ViewPlaceActivity.class);
                 startActivity(changeToViewPlace);
             }
-        });
+        });*/
 
         /////////////////////////////////////////////////////////////////////
 
@@ -110,16 +114,27 @@ public class MyPlacesActivity extends FragmentActivity implements LoaderManager.
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 
-        ArrayList<String> listData = new ArrayList<>();
+
+        String[] fromColumns = new String[] {"_id", "name",};
+        int[] toViews = {R.id.placeName, R.id.placeType};
+
+        SimpleCursorAdapter myCursorAdapter;
+        myCursorAdapter = new SimpleCursorAdapter(getBaseContext(),R.layout.list_row, data, fromColumns, toViews, 0);
+
+        /*ArrayList<ArrayList<String>> lists = new ArrayList<ArrayList<String>>();
         while(data.moveToNext()){
+
+            ArrayList<String> listData = new ArrayList<>();
             //add data pulled from db to list
             listData.add(data.getString(0));
             listData.add(data.getString(1));
-        }
+
+            lists.add(listData);
+        }*/
 
         //create list adapter and set this
-        ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listData);
-        listView.setAdapter(adapter);
+        ListView listView2 = (ListView) findViewById(R.id.savedPlacesList);
+        listView.setAdapter(myCursorAdapter);
     }
 
     @Override
