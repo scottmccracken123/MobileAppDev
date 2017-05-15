@@ -1,6 +1,8 @@
 package placemate.placemate;
 
+import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -8,12 +10,13 @@ import android.net.NetworkInfo;
 import android.util.Log;
 import android.widget.Toast;
 
-public class NetworkChangeBroadcast extends BroadcastReceiver {
+/*public class NetworkChangeBroadcast extends BroadcastReceiver {
 
     public NetworkChangeBroadcast(){}
 
     @Override
     public void onReceive(Context context, Intent intent) {
+
 
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
@@ -35,3 +38,4 @@ public class NetworkChangeBroadcast extends BroadcastReceiver {
 
     }
 }
+*/

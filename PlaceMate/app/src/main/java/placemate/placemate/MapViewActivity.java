@@ -3,8 +3,10 @@ package placemate.placemate;
 
 import android.Manifest;
 import android.app.Fragment;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -28,6 +30,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -72,7 +75,7 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
     //nav variable intialisation
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mToggle;
-
+    private IntentFilter mIntentFilter;
 
     @Override
     protected void onCreate( Bundle savedInstanceState) {
@@ -83,6 +86,11 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
 
         //navigation switch for drawer menu
 
+
+        // Adams stuff
+
+        mIntentFilter = new IntentFilter();
+        mIntentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
 
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -164,6 +172,18 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
         });
 
 
+    }
+
+    @Override
+    protected void onResume() {
+        registerReceiver(broadcastReceiver, mIntentFilter);
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause(){
+        unregisterReceiver(broadcastReceiver);
+        super.onPause();
     }
 
     @Override
@@ -334,4 +354,22 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
         }
 
     }
+
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+
+            if (networkInfo == null) {
+                Toast.makeText(context, "Map View feature requires an internet connection...", Toast.LENGTH_LONG).show();
+                Intent nextIntent = new Intent(context, MyPlacesActivity.class);
+                nextIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(nextIntent);
+            }else if(networkInfo.getType() == ConnectivityManager.TYPE_MOBILE) {
+                Toast.makeText(context, "You're using your mobile data, we recommend a wifi connection.", Toast.LENGTH_LONG).show();
+
+            }
+        }
+    };
 }
