@@ -18,6 +18,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 import java.util.List;
@@ -171,23 +172,30 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
+
+        String[] anything = {"placeImg"};
+
+
         //pulling the data using custom loader from content provider
-        return new CursorLoader(this, Uri.parse("content://placemate.placemate.PlaceProvider/cpplace"), null, null, null, null);
+        return new CursorLoader(this, Uri.parse("content://placemate.placemate.PlaceProvider/cpplace"), anything, null, null, null);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 
-        ArrayList<String> listData = new ArrayList<>();
+
         while(data.moveToNext()){
             //add data pulled from db to list
-            listData.add(data.getString(0));
-            listData.add(data.getString(1));
+
+            if(data.getBlob(0) != null){
+                Log.d("BLOB TEST", "worked?");
+            } else {
+                Log.d("BLOB NULL", "not worked");
+            }
+
         }
 
-        //create list adapter and set this
-        ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listData);
-        listView.setAdapter(adapter);
+
     }
 
     @Override

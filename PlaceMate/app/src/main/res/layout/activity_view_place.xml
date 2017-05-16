@@ -4,7 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    >
 
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -16,50 +17,62 @@
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
-        tools:context="placemate.placemate.ViewPlaceActivity">
+        android:background="@color/colorPrimaryDark"
+        tools:context="placemate.placemate.ViewPlaceActivity"
+        >
 
         <include
+            android:id="@+id/include2"
             layout="@layout/navigation_action"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/include2" />
+            android:layout_height="wrap_content" />
 
         <TextView
-            android:text="@string/place_name"
+            android:id="@+id/placeNameTxtView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/placeNameTxtView"
+            android:text="@string/place_name"
             android:textSize="30sp" />
 
         <Button
-            android:text="Save Place"
+            android:id="@+id/btnSavePlace"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/phoneTxtView"
             android:layout_marginLeft="25sp"
             android:layout_marginStart="25sp"
-            android:layout_below="@+id/phoneTxtView"
-            android:id="@+id/btnSavePlace"
+            android:text="Save Place"
 
             />
 
 
         <TextView
-            android:text="@string/place_address"
+            android:id="@+id/addressTxtView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/include2"
             android:layout_marginLeft="25sp"
             android:layout_marginStart="25sp"
-            android:id="@+id/addressTxtView"
-            android:layout_below="@+id/include2" />
+            android:text="@string/place_address" />
 
         <TextView
-            android:text="@string/place_phone_number"
+            android:id="@+id/phoneTxtView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/addressTxtView"
             android:layout_marginLeft="25sp"
             android:layout_marginStart="25sp"
-            android:layout_below="@+id/addressTxtView"
-            android:id="@+id/phoneTxtView" />
+            android:text="@string/place_phone_number" />
+
+        <ImageView
+            android:id="@+id/placeImgView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btnSavePlace"
+            android:layout_marginTop="114dp"
+            android:layout_toEndOf="@+id/phoneTxtView"
+            android:layout_toRightOf="@+id/phoneTxtView"
+            app:srcCompat="@color/cast_expanded_controller_ad_container_white_stripe_color" />
 
 
     </RelativeLayout>

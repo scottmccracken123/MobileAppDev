@@ -29,5 +29,6 @@
     <string name="place_name">Place Name</string>
     <string name="place_address"></string>
     <string name="place_phone_number"></string>
+    <string name="share"></string>
 
 </resources>

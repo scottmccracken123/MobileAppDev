@@ -44,6 +44,8 @@ public class PlaceProvider extends ContentProvider{
     static final String rating = "rating";
     static final String placeType = "placeType";
     static final String website = "website";
+    static final String placeBestImg = "placeBestImg";
+    static final String placeImg = "placeImg";
     static final int uriCode = 1;
 
     //maps key value pairs
@@ -74,7 +76,9 @@ public class PlaceProvider extends ContentProvider{
             " latitude TEXT," +
             " rating TEXT," +
             " placeType TEXT," +
-            " website TEXT" +
+            " website TEXT," +
+            " placeImg BLOB," +
+            " placeBestImg BLOB" +
             ");";
 
     @Override
