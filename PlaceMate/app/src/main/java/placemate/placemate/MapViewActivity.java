@@ -4,6 +4,7 @@ package placemate.placemate;
 import android.Manifest;
 import android.app.Fragment;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -127,8 +128,14 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
                 startActivity(i);
             }
         };
+        try {
+            getLocation();
+        }catch(NullPointerException exception) {
+            Toast.makeText(this, "Mapview feature requires your devices location feature to be enabled.", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(this, MyPlacesActivity.class);
+            startActivity(intent);
+        }
 
-        getLocation();
         //navigation switch for drawer menu
 
         //navigation switch for drawer menu
@@ -194,7 +201,7 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
     public boolean onMarkerClick(final Marker marker) {
         try {
             int venueArrayId = (int) marker.getTag();
-            Intent toViewPlace = new Intent(this, ViewPlaceActivity.class);
+            Intent toViewPlace = new Intent(getApplicationContext(), ViewPlaceActivity.class);
             toViewPlace.putExtra("venueID", placeDetails.getJSONObject("response").getJSONArray("venues").getJSONObject(venueArrayId).getString("id"));
             startActivity(toViewPlace);
         } catch(JSONException e) {

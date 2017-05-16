@@ -26,43 +26,21 @@ import android.os.Bundle;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+
 import android.view.MenuItem;
 
 import java.util.List;
+
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import android.widget.ListView;
-import com.google.android.gms.maps.MapView;
-
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.Toast;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-
-
-import android.widget.TextView;
-
-import org.w3c.dom.Text;
-
 
 public class MyPlacesActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -94,6 +72,8 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
         mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
         mDrawerLayout.addDrawerListener(mToggle);
         mToggle.syncState();
+
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
@@ -138,7 +118,6 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
 
         //initialise resolver
         resolver = getContentResolver();
-
         //initialising custom loader
         getSupportLoaderManager().initLoader(LOADER_ID, null, this);
 
@@ -217,7 +196,6 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-
         //pulling the data using custom loader from content provider
         return new CursorLoader(this, Uri.parse("content://placemate.placemate.PlaceProvider/cpplace"), null, null, null, null);
     }
@@ -226,8 +204,9 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 
 
+
         String[] fromColumns = new String[] {"name", "placeType","_id"};
-        int[] toViews = {R.id.placeName, R.id.placeType, R.id.duration};
+        int[] toViews = {R.id.placeName, R.id.placeType};
 
         SimpleCursorAdapter myCursorAdapter;
         myCursorAdapter = new SimpleCursorAdapter(getBaseContext(),R.layout.list_row, data, fromColumns, toViews, 0);
@@ -235,11 +214,26 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
         //create list adapter and set this
         ListView listView2 = (ListView) findViewById(R.id.savedPlacesList);
         listView.setAdapter(myCursorAdapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getBaseContext(), ViewSavedPlaceActivity.class);
+                intent.putExtra("PLACE_ID", String.valueOf(id));
+                startActivity(intent);
+            }
+        });
+
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
     }
+
+    //makes toast with customisable message
+    private void toastMessage(String message){
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    };
 
 }

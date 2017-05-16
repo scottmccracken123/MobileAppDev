@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bwq="http://schemas.android.com/apk/res-auto"
+    >
     <item android:id="@+id/nav_my_places"
           android:icon="@mipmap/ic_home_black_24dp"
           android:title="My Places" />
@@ -11,4 +14,17 @@
     <item android:id="@+id/nav_logout"
         android:icon="@mipmap/ic_power_settings_new_black_24dp"
         android:title="Log out" />
+
+    <item
+        android:id="@+id/action_share"
+        app:showAsAction="ifRoom|withText"
+        android:title="@string/share" />
+
+<!--
+    <item
+        android:id="@+id/action_share"
+        android:title="@string/share"
+        app:actionProviderClass="android.support.v7.widget.ShareActionProvider"
+        app:showAsAction="always"/>
+-->
 </menu>

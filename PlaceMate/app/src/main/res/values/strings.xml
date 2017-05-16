@@ -30,4 +30,8 @@
     <string name="place_address"></string>
     <string name="place_phone_number"></string>
 
+    <string name="title_activity_view_saved_place">ViewSavedPlace</string>
+
+    <string name="share"></string>
+
 </resources>
