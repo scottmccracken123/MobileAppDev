@@ -161,7 +161,6 @@ public class ViewPlaceActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v){
-                Log.d("HERE SCOTT", downloadImgByteArray.toString());
                 addData();
             }
         });
