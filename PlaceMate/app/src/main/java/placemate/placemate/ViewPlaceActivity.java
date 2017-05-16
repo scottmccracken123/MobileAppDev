@@ -178,7 +178,7 @@ public class ViewPlaceActivity extends AppCompatActivity {
     //makes toast with customisable message
     private void toastMessage(String message){
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
+    };
 
     private class GetAPIData extends AsyncTask<Void, String, String> {
 
