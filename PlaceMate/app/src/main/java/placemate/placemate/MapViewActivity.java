@@ -9,17 +9,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -199,14 +202,55 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
 
     @Override
     public boolean onMarkerClick(final Marker marker) {
+        String selectedVenueId = "";
         try {
             int venueArrayId = (int) marker.getTag();
-            Intent toViewPlace = new Intent(getApplicationContext(), ViewPlaceActivity.class);
-            toViewPlace.putExtra("venueID", placeDetails.getJSONObject("response").getJSONArray("venues").getJSONObject(venueArrayId).getString("id"));
-            startActivity(toViewPlace);
+            selectedVenueId = placeDetails.getJSONObject("response").getJSONArray("venues").getJSONObject(venueArrayId).getString("id");
         } catch(JSONException e) {
             e.printStackTrace();
         }
+        String[] columns = new String[]{"_id"};
+
+        //query database to see if contained
+        CursorLoader getVenueId = new CursorLoader(this, Uri.parse("content://placemate.placemate.PlaceProvider/cpplace"), columns, " venueId = '" + selectedVenueId +"'", null, null);
+        Cursor cursor = getVenueId.loadInBackground();
+        Log.d("QUERY", Integer.toString(cursor.getCount()));
+
+        int count = cursor.getCount();
+        if(count > 0 && cursor.moveToFirst()){
+            //get db id to pass through to saved
+            int dbId = cursor.getInt(0);
+            Log.d("QUERY", "DBID" + Integer.toString(dbId));
+            Intent toViewPlace = new Intent(getApplicationContext(), ViewSavedPlaceActivity.class);
+            toViewPlace.putExtra("PLACE_ID", Integer.toString(dbId));
+            startActivity(toViewPlace);
+
+        } else {
+            Intent toViewPlace = new Intent(getApplicationContext(), ViewPlaceActivity.class);
+            toViewPlace.putExtra("venueID", selectedVenueId);
+            startActivity(toViewPlace);
+            Log.d("QUERY", " THAN 0: "+Integer.toString(count));
+        }
+
+
+
+
+            /*
+        } catch (Exception e){
+            Intent toViewPlace = new Intent(getApplicationContext(), ViewPlaceActivity.class);
+            toViewPlace.putExtra("venueID", selectedVenueId);
+            startActivity(toViewPlace);
+            Log.d("ERROR", "go through to normal");
+            e.printStackTrace();
+        }
+        */
+        //Intent toViewPlace = new Intent(getApplicationContext(), ViewSavedPlaceActivity.class);
+        //toViewPlace.putExtra("venueID", selectedVenueId);
+        //startActivity(toViewPlace);
+
+
+
+
 
         return false;
     }
