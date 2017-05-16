@@ -21,12 +21,16 @@ import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.MenuItem;
 
 import java.util.List;
+
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import android.widget.ListView;
+import android.widget.Toast;
 
 
 public class MyPlacesActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -60,6 +64,8 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
         mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
         mDrawerLayout.addDrawerListener(mToggle);
         mToggle.syncState();
+
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
@@ -95,7 +101,6 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
 
         //initialise resolver
         resolver = getContentResolver();
-
         //initialising custom loader
         getSupportLoaderManager().initLoader(LOADER_ID, null, this);
 
@@ -166,7 +171,7 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
 
 
         String[] fromColumns = new String[] {"name", "placeType","_id"};
-        int[] toViews = {R.id.placeName, R.id.placeType, R.id.duration};
+        int[] toViews = {R.id.placeName, R.id.placeType};
 
         SimpleCursorAdapter myCursorAdapter;
         myCursorAdapter = new SimpleCursorAdapter(getBaseContext(),R.layout.list_row, data, fromColumns, toViews, 0);
@@ -174,11 +179,25 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
         //create list adapter and set this
         ListView listView2 = (ListView) findViewById(R.id.savedPlacesList);
         listView.setAdapter(myCursorAdapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getBaseContext(), ViewSavedPlaceActivity.class);
+                intent.putExtra("PLACE_ID", String.valueOf(id));
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
     }
+
+    //makes toast with customisable message
+    private void toastMessage(String message){
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    };
 
 }

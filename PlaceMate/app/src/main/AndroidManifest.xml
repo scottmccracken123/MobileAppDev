@@ -24,25 +24,20 @@
         </intent-filter>
     </activity>
 
-
-
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".LoginActivity">
-            
-        </activity>
+        <activity android:name=".LoginActivity" />
         <activity android:name=".MyPlacesActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".MapViewActivity" />
         <activity android:name=".ViewPlaceActivity" />
 
@@ -59,12 +54,14 @@
             android:exported="true"
             android:multiprocess="true" />
 
-        <receiver android:name=".NetworkChangeBroadcast" >
+        <receiver android:name=".NetworkChangeBroadcast">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
                 <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
             </intent-filter>
         </receiver>
+
+        <activity android:name=".ViewSavedPlaceActivity" />
     </application>
 
 </manifest>

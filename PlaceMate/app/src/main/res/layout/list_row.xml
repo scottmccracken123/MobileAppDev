@@ -5,7 +5,7 @@
     android:background="@drawable/list_selector"
     android:orientation="horizontal"
     android:padding="5dip"
-    android:paddingBottom="5dip">
+    >
 
     <!--  ListRow Left sied Thumbnail image -->
     <LinearLayout android:id="@+id/thumbnail"
