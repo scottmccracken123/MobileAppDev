@@ -26,6 +26,8 @@ import android.os.Bundle;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+
 import android.view.MenuItem;
 
 import java.util.List;
@@ -194,13 +196,13 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-
         //pulling the data using custom loader from content provider
         return new CursorLoader(this, Uri.parse("content://placemate.placemate.PlaceProvider/cpplace"), null, null, null, null);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
 
 
         String[] fromColumns = new String[] {"name", "placeType","_id"};
@@ -221,6 +223,7 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
                 startActivity(intent);
             }
         });
+
     }
 
     @Override
