@@ -135,6 +135,16 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
 
     }
 
+    //ensure navigation drawer works on burger icon
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(mToggle.onOptionsItemSelected(item)){
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     public void deletePlace() {
        int deletedRows = getContentResolver().delete(PlaceProvider.CONTENT_URL, "_id = " + placeId, null);
 
