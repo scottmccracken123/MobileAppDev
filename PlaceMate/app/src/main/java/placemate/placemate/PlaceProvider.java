@@ -154,11 +154,10 @@ public class PlaceProvider extends ContentProvider{
         // an empty row
         long rowID = sqlDB.insert(TABLE_NAME, null, values);
 
-        // Verify a row has been added
+        //check row has been added - 0 reflects empty db
         if (rowID > 0) {
 
             // Append the given id to the path and return a Builder used to manipulate URI
-            // references
             Uri _uri = ContentUris.withAppendedId(CONTENT_URL, rowID);
 
             // getContentResolver provides access to the content model
@@ -186,8 +185,7 @@ public class PlaceProvider extends ContentProvider{
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
 
-        // getContentResolver provides access to the content model
-        // notifyChange notifies all observers that a row was updated
+        // getContentResolver provides access to the content model, notify any observers that it's been udpated
         getContext().getContentResolver().notifyChange(uri, null);
         return rowsDeleted;
     }

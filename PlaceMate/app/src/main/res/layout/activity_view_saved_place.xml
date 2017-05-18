@@ -18,11 +18,11 @@
         tools:context="placemate.placemate.ViewSavedPlaceActivity">
 
         <ImageView
+            android:id="@+id/place_image"
             android:layout_width="match_parent"
             android:layout_height="500px"
-            android:scaleType="fitStart"
             android:background="@drawable/image_bg"
-            android:id="@+id/place_image"/>
+            android:scaleType="fitStart" />
 
         <TextView
             android:layout_width="wrap_content"

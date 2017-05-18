@@ -3,6 +3,7 @@ package placemate.placemate;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.LoaderManager;
@@ -12,10 +13,12 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,7 +34,7 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
     private static final String TAG = "SavedPlaceActivity";
     private static final int LOADER_ID = 0x01;
     public String placeId;
-    public String placeName;
+    public byte[] placeName;
     public String placeType;
     public String placeRating;
     ContentResolver resolver;
@@ -103,7 +106,7 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
-        String[] columns = new String[]{"name", "placeType", "rating"};
+        String[] columns = new String[]{"placeBestImg"};
 
         //pulling the data using custom loader from content provider
         //if id = 1 query should say
@@ -115,13 +118,18 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         //data for the selected place has been pulled from db
         while(data.moveToNext()) {
-            placeName = data.getString(0);
-            placeType = data.getString(1);
-            placeRating = data.getString(2);
+            placeName = data.getBlob(0);
+
         }
 
+        ImageView mainImg = (ImageView) findViewById(R.id.place_image);
+        //Log.d("BITMAP FACTORY", BitmapFactory.decodeByteArray(placeName,0,placeName.length).toString());
+        mainImg.setImageBitmap(BitmapFactory.decodeByteArray( placeName,
+                0,placeName.length));
+
         TextView name = (TextView) findViewById(R.id.place_name);
-        name.setText(placeName);
+
+        name.setText(placeName.toString());
 
         TextView type = (TextView) findViewById(R.id.place_type);
         type.setText(placeType);

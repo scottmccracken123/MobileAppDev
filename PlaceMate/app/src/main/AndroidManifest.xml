@@ -54,7 +54,9 @@
         <activity android:name=".UserGuideActivity">
         </activity>
 
-        <activity android:name=".ViewSavedPlaceActivity" />
+        <activity android:name=".ViewSavedPlaceActivity"
+            android:configChanges="orientation|screenSize">
+        </activity>
 
     </application>
 
