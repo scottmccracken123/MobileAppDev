@@ -15,6 +15,11 @@
         android:icon="@mipmap/ic_power_settings_new_black_24dp"
         android:title="Log out" />
 
+    <item android:id="@+id/nav_user_guide"
+        android:icon="@mipmap/ic_help_black_24dp"
+        android:title="User Guide" />
+
+
     <item
         android:id="@+id/action_share"
         app:showAsAction="ifRoom|withText"

@@ -39,6 +39,8 @@ import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.maps.MapView;
+
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -105,6 +107,10 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
                         break;
                     case (R.id.nav_logout):
                         signOut();
+                        break;
+                    case(R.id.nav_user_guide):
+                        Intent changeMap = new Intent(getApplicationContext(), UserGuideActivity.class);
+                        startActivity(changeMap);
                         break;
                 }
                 return true;

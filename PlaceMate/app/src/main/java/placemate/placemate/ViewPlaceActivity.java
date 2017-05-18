@@ -145,6 +145,10 @@ public class ViewPlaceActivity extends AppCompatActivity {
                         //code for actually logging out needs to be implemented
                         Intent changeToLogout = new Intent(getApplicationContext(), LoginActivity.class);
                         break;
+                    case(R.id.nav_user_guide):
+                        Intent changeMap = new Intent(getApplicationContext(), UserGuideActivity.class);
+                        startActivity(changeMap);
+                        break;
                 }
                 return true;
             }

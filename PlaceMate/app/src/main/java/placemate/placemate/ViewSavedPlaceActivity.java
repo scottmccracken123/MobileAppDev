@@ -77,6 +77,10 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
                     case (R.id.nav_logout):
                         signOut();
                         break;
+                    case(R.id.nav_user_guide):
+                        Intent changeMap = new Intent(getApplicationContext(), UserGuideActivity.class);
+                        startActivity(changeMap);
+                        break;
                 }
                 return true;
             }
