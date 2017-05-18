@@ -11,6 +11,6 @@ public class UserGuideActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_guide);
         WebView myWebView = (WebView) findViewById(R.id.webview);
-        myWebView.loadUrl("176.74.17.181/UserGuide.html");
+        myWebView.loadUrl("http://176.74.17.181/userGuide.html");
     }
 }
