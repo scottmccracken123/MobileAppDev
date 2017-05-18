@@ -154,25 +154,7 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
         );
     }
 
-    private void shareLink(String urlToShare) {
-        Intent intent = new Intent(Intent.ACTION_SEND); // change action
-        intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_TEXT, urlToShare);
-        boolean facebookAppFound = false;
-        List<ResolveInfo> matches = getPackageManager().queryIntentActivities(intent, 0);
-            for (ResolveInfo info:matches) {
-                if (info.activityInfo.packageName.toLowerCase().startsWith("com.facebook.katana")) {
-                    intent.setPackage(info.activityInfo.packageName);
-                    facebookAppFound = true;
-                    break;
-                }
-            }
-        if (!facebookAppFound) {
-            String shareUrl = "https://www.facebook.com/sharer/sharer.php?u=" + urlToShare;
-            intent = new Intent(Intent.ACTION_VIEW, Uri.parse(shareUrl));
-        }
-        startActivity(intent);
-    }
+
 
     public void setNotification(String title, String content) {
 

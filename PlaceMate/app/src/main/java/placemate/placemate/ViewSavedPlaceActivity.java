@@ -1,10 +1,17 @@
 package placemate.placemate;
 
+import android.*;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.database.Cursor;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -27,27 +34,26 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.vision.text.Text;
 
+import java.util.List;
+
 public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String TAG = "SavedPlaceActivity";
     private static final int LOADER_ID = 0x01;
-    public String placeId;
-    public String placeName;
-    public String placeType;
-    public String placeRating;
-    public String addressOne;
-    public String addressTwo;
-    public String city;
-    public String postcode;
-    public String phoneNumber;
-
+    public String placeId, placeName, placeType, placeRating, addressOne, addressTwo, city, postcode,phoneNumber, website, longitude, latitude;
     public String[] columns;
+    private final int permissionNumber = 10;
+    private double cLongitude;
+    private double cLatitude;
+
+
     ContentResolver resolver;
-    Button deleteButton;
+    Button deleteButton, mapButton, shareButton;
 
     //navigation layout variables
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mToggle;
+    private LocationManager locationManager;
 
     //google sign in variables
     GoogleApiClient mGoogleApiClient;
@@ -98,7 +104,6 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
         getSupportLoaderManager().initLoader(LOADER_ID, null, this);
 
         deleteButton = (Button) findViewById(R.id.delete_place);
-
         deleteButton.setOnClickListener(new View.OnClickListener(){
 
             @Override
@@ -106,12 +111,31 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
                 deletePlace();
             }
         });
+
+        mapButton = (Button) findViewById(R.id.place_directions);
+        mapButton.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v){
+                directions(v);
+            }
+        });
+
+        shareButton = (Button) findViewById(R.id.place_share);
+        shareButton.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v){
+                shareLink(website);
+            }
+        });
+
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
-        String[] columns = new String[]{"name", "placeType", "rating", "addressOne", "addressTwo", "city", "postcode", "phoneNumber"};
+        String[] columns = new String[]{"name", "placeType", "rating", "addressOne", "addressTwo", "city", "postcode", "phoneNumber", "website", "longitude", "latitude"};
 
         //pulling the data using custom loader from content provider
         //if id = 1 query should say
@@ -132,6 +156,9 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
             city = data.getString(5);
             postcode = data.getString(6);
             phoneNumber = data.getString(7);
+            website = data.getString(8);
+            longitude = data.getString(9);
+            latitude = data.getString(10);
         }
 
         TextView name = (TextView) findViewById(R.id.place_name);
@@ -190,6 +217,13 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
         } else {
             addTel.setVisibility(View.GONE);
         }
+
+        TextView placeWeb = (TextView) findViewById(R.id.place_website);
+        if(website != null && !website.isEmpty()) {
+            addTel.setText(website);
+        } else {
+            addTel.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -221,6 +255,52 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
                     }
                 }
         );
+    }
+
+    public void directions(View view){
+        try {
+            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    requestPermissions(new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.INTERNET}
+                            ,permissionNumber);
+                }
+                return;
+            }
+            locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+            Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            cLongitude = location.getLongitude();
+            cLatitude = location.getLatitude();
+
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse("http://maps.google.com/maps?saddr="+cLatitude+","+cLongitude+"&daddr="+longitude+","+latitude));
+            startActivity(intent);
+
+        }catch(NullPointerException exception) {
+            Toast.makeText(this, "The direction feature requires your devices location to be enabled.", Toast.LENGTH_LONG).show();
+        }
+
+
+
+    }
+
+    private void shareLink(String urlToShare) {
+        Intent intent = new Intent(Intent.ACTION_SEND); // change action
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, urlToShare);
+        boolean facebookAppFound = false;
+        List<ResolveInfo> matches = getPackageManager().queryIntentActivities(intent, 0);
+        for (ResolveInfo info:matches) {
+            if (info.activityInfo.packageName.toLowerCase().startsWith("com.facebook.katana")) {
+                intent.setPackage(info.activityInfo.packageName);
+                facebookAppFound = true;
+                break;
+            }
+        }
+        if (!facebookAppFound) {
+            String shareUrl = "https://www.facebook.com/sharer/sharer.php?u=" + urlToShare;
+            intent = new Intent(Intent.ACTION_VIEW, Uri.parse(shareUrl));
+        }
+        startActivity(intent);
     }
 
     //makes toast with customisable message

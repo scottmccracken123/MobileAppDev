@@ -406,7 +406,7 @@ public class ViewPlaceActivity extends AppCompatActivity {
         private void setFields(){
             //Log.d("HEREEE", resultsH.get("zvenueName"));
 
-            String pName, pType, pAdd1, pAdd2, pCity, pPost, pTel, pRating;
+            String pName, pType, pAdd1, pAdd2, pCity, pPost, pTel, pRating, pWeb;
             pName = resultsH.get("venueName");
             pType = resultsH.get("placeType");
             pAdd1 = resultsH.get("addressOne");
@@ -415,6 +415,7 @@ public class ViewPlaceActivity extends AppCompatActivity {
             pPost = resultsH.get("postcode");
             pTel = resultsH.get("phoneNumber");
             pRating = resultsH.get("rating");
+            pWeb = resultsH.get("website");
 
             TextView name = (TextView) findViewById(R.id.place_name);
             if(pName != null  && !pName.isEmpty()) {
@@ -469,6 +470,13 @@ public class ViewPlaceActivity extends AppCompatActivity {
             TextView addTel = (TextView) findViewById(R.id.place_address_telephone);
             if(pTel != null && !pTel.isEmpty()) {
                 addTel.setText(pTel);
+            } else {
+                addTel.setVisibility(View.GONE);
+            }
+
+            TextView placeWeb = (TextView) findViewById(R.id.place_website);
+            if(pWeb != null && !pWeb.isEmpty()) {
+                addTel.setText(pWeb);
             } else {
                 addTel.setVisibility(View.GONE);
             }
