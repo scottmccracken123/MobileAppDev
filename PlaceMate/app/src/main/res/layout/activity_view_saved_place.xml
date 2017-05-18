@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/place_image"
             android:id="@+id/place_name"
-            android:textSize="20dp"
+            android:textSize="30dp"
             android:textColor="#000000"
             android:textStyle="bold"
             android:paddingTop="5dp"/>
@@ -45,14 +45,77 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/place_type"
-            android:id="@+id/place_rating"
+            android:id="@+id/place_address_1"
+            android:layout_marginTop="15dp"
             />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/place_address_1"
+            android:id="@+id/place_address_2"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/place_address_2"
+            android:id="@+id/place_address_city"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/place_address_city"
+            android:id="@+id/place_address_postcode"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/place_address_postcode"
+            android:id="@+id/place_address_telephone"
+            />
+
+
+        <RatingBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/place_rating"
+            android:layout_below="@+id/place_address_telephone"
+            android:isIndicator="true"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/place_address_telephone"
+            android:id="@+id/place_website"
+            android:autoLink="web"
+            android:layout_marginBottom="15dp"
+            />
+
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Delete"
             android:layout_below="@+id/place_rating"
             android:id="@+id/delete_place"
+            />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Launch Map"
+            android:layout_below="@+id/delete_place"
+            android:id="@+id/place_directions"
+            />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Share"
+            android:layout_below="@+id/place_directions"
+            android:id="@+id/place_share"
             />
 
     </RelativeLayout>

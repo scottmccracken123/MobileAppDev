@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.content.ContentResolver;
 import android.database.Cursor;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -39,9 +40,8 @@ import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.maps.MapView;
-
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MyPlacesActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -119,8 +119,6 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
 
 
         listView = (ListView) findViewById(R.id.savedPlacesList);
-        /*viewPlaceBtn = (Button) findViewById(R.id.viewPlaceBtn);*/
-
 
         //initialise resolver
         resolver = getContentResolver();
@@ -157,25 +155,7 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
         );
     }
 
-    private void shareLink(String urlToShare) {
-        Intent intent = new Intent(Intent.ACTION_SEND); // change action
-        intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_TEXT, urlToShare);
-        boolean facebookAppFound = false;
-        List<ResolveInfo> matches = getPackageManager().queryIntentActivities(intent, 0);
-            for (ResolveInfo info:matches) {
-                if (info.activityInfo.packageName.toLowerCase().startsWith("com.facebook.katana")) {
-                    intent.setPackage(info.activityInfo.packageName);
-                    facebookAppFound = true;
-                    break;
-                }
-            }
-        if (!facebookAppFound) {
-            String shareUrl = "https://www.facebook.com/sharer/sharer.php?u=" + urlToShare;
-            intent = new Intent(Intent.ACTION_VIEW, Uri.parse(shareUrl));
-        }
-        startActivity(intent);
-    }
+
 
     public void setNotification(String title, String content) {
 
@@ -209,27 +189,57 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 
+        if(data.getCount() == 0) {
+            TextView empty = (TextView) findViewById(R.id.place_empty);
+            empty.setText("You currently have no saved places.");
+        } else {
+            String[] fromColumns = new String[] {"name", "placeType", "_id"};
+            int[] toViews = {R.id.placeName, R.id.placeType};
 
 
-        String[] fromColumns = new String[] {"name", "placeType","_id"};
-        int[] toViews = {R.id.placeName, R.id.placeType};
 
-        SimpleCursorAdapter myCursorAdapter;
-        myCursorAdapter = new SimpleCursorAdapter(getBaseContext(),R.layout.list_row, data, fromColumns, toViews, 0);
+            SimpleCursorAdapter myCursorAdapter;
+            myCursorAdapter = new SimpleCursorAdapter(getBaseContext(),R.layout.list_row, data, fromColumns, toViews, 0);
 
-        //create list adapter and set this
-        ListView listView2 = (ListView) findViewById(R.id.savedPlacesList);
-        listView.setAdapter(myCursorAdapter);
+            /*while(data.moveToNext())
+            {
+                if(data.getBlob(0) != null){
+                    Log.d("BLOB TEST", "worked?");
+                } else {
+                    Log.d("BLOB NULL", "not worked");
+                }
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getBaseContext(), ViewSavedPlaceActivity.class);
-                intent.putExtra("PLACE_ID", String.valueOf(id));
-                startActivity(intent);
-            }
-        });
+            }*/
 
+
+            //images upload?
+            /*SimpleCursorAdapter.ViewBinder viewBinder = new SimpleCursorAdapter.ViewBinder() {
+
+                public boolean setViewValue(View view, Cursor cursor,
+                                            int columnIndex) {
+                    ImageView image = (ImageView) view;
+                    byte[] byteArr = cursor.getBlob(columnIndex);
+                    image.setImageBitmap(BitmapFactory.decodeByteArray(byteArr, 0, byteArr.length));
+                    return true;
+                }
+            };
+            ImageView image = (ImageView) findViewById(R.id.list_image);
+            viewBinder.setViewValue(image, data, data.getColumnIndex("placeImg"));
+            myCursorAdapter.setViewBinder(viewBinder);*/
+
+            //create list adapter and set this
+            ListView listView = (ListView) findViewById(R.id.savedPlacesList);
+            listView.setAdapter(myCursorAdapter);
+
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Intent intent = new Intent(getBaseContext(), ViewSavedPlaceActivity.class);
+                    intent.putExtra("PLACE_ID", String.valueOf(id));
+                    startActivity(intent);
+                }
+            });
+        }
     }
 
     @Override

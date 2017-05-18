@@ -17,62 +17,93 @@
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
-        android:background="@color/colorPrimaryDark"
         tools:context="placemate.placemate.ViewPlaceActivity"
         >
 
-        <include
+        <!--<include
             android:id="@+id/include2"
             layout="@layout/navigation_action"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content" />-->
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="500px"
+            android:scaleType="fitStart"
+            android:background="@drawable/image_bg"
+            android:id="@+id/place_image"/>
 
         <TextView
-            android:id="@+id/placeNameTxtView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/place_name"
-            android:textSize="30sp" />
+            android:layout_below="@+id/place_image"
+            android:id="@+id/place_name"
+            android:textSize="30dp"
+            android:textColor="#000000"
+            android:textStyle="bold"
+            android:paddingTop="5dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/place_name"
+            android:id="@+id/place_type"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/place_type"
+            android:id="@+id/place_address_1"
+            android:layout_marginTop="15dp"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/place_address_1"
+            android:id="@+id/place_address_2"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/place_address_2"
+            android:id="@+id/place_address_city"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/place_address_city"
+            android:id="@+id/place_address_postcode"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/place_address_postcode"
+            android:id="@+id/place_address_telephone"
+            />
+
+
+        <RatingBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/place_rating"
+            android:layout_below="@+id/place_address_telephone"
+            android:isIndicator="true"/>
 
         <Button
             android:id="@+id/btnSavePlace"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/phoneTxtView"
+            android:layout_below="@+id/place_rating"
             android:layout_marginLeft="25sp"
             android:layout_marginStart="25sp"
             android:text="Save Place"
 
             />
-
-
-        <TextView
-            android:id="@+id/addressTxtView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/include2"
-            android:layout_marginLeft="25sp"
-            android:layout_marginStart="25sp"
-            android:text="@string/place_address" />
-
-        <TextView
-            android:id="@+id/phoneTxtView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/addressTxtView"
-            android:layout_marginLeft="25sp"
-            android:layout_marginStart="25sp"
-            android:text="@string/place_phone_number" />
-
-        <ImageView
-            android:id="@+id/placeImgView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/btnSavePlace"
-            android:layout_marginTop="114dp"
-            android:layout_toEndOf="@+id/phoneTxtView"
-            android:layout_toRightOf="@+id/phoneTxtView"
-            app:srcCompat="@color/cast_expanded_controller_ad_container_white_stripe_color" />
 
 
     </RelativeLayout>

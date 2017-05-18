@@ -28,6 +28,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -95,7 +96,7 @@ public class ViewPlaceActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_place);
         btnSavePlace = (Button) findViewById(R.id.btnSavePlace);
-        mImg = (ImageView) findViewById(R.id.placeImgView);
+        mImg = (ImageView) findViewById(R.id.place_image);
 
 
 
@@ -407,7 +408,82 @@ public class ViewPlaceActivity extends AppCompatActivity {
         }
 
         private void setFields(){
-            Log.d("HEREEE", resultsH.get("venueName"));
+            //Log.d("HEREEE", resultsH.get("zvenueName"));
+
+            String pName, pType, pAdd1, pAdd2, pCity, pPost, pTel, pRating, pWeb;
+            pName = resultsH.get("venueName");
+            pType = resultsH.get("placeType");
+            pAdd1 = resultsH.get("addressOne");
+            pAdd2 = resultsH.get("addressTwo");
+            pCity = resultsH.get("city");
+            pPost = resultsH.get("postcode");
+            pTel = resultsH.get("phoneNumber");
+            pRating = resultsH.get("rating");
+            pWeb = resultsH.get("website");
+
+            TextView name = (TextView) findViewById(R.id.place_name);
+            if(pName != null  && !pName.isEmpty()) {
+                name.setText(pName);
+            } else {
+                name.setVisibility(View.GONE);
+            }
+
+            TextView type = (TextView) findViewById(R.id.place_type);
+            if(pType != null && !pType.isEmpty()) {
+                type.setText(pType);
+            } else {
+                type.setVisibility(View.GONE);
+            }
+
+            RatingBar rating = (RatingBar) findViewById(R.id.place_rating);
+            if(pRating != null && !pRating.isEmpty()) {
+                Float newRating = Float.parseFloat(pRating);
+                rating.setRating(newRating/2);
+            } else {
+                rating.setVisibility(View.GONE);
+            }
+
+            TextView add1 = (TextView) findViewById(R.id.place_address_1);
+            if(pAdd1 != null && !pAdd1.isEmpty()) {
+                add1.setText(pAdd1);
+            } else {
+                add1.setVisibility(View.GONE);
+            }
+
+            TextView add2 = (TextView) findViewById(R.id.place_address_2);
+            if(pAdd2 != null && !pAdd2.isEmpty()) {
+                add2.setText(pAdd2);
+            } else {
+                add2.setVisibility(View.GONE);
+            }
+
+            TextView addCity = (TextView) findViewById(R.id.place_address_city);
+            if(pCity != null && !pCity.isEmpty()) {
+                addCity.setText(pCity);
+            } else {
+                addCity.setVisibility(View.GONE);
+            }
+
+            TextView addPost = (TextView) findViewById(R.id.place_address_postcode);
+            if(pPost != null && !pPost.isEmpty()) {
+                addPost.setText(pPost);
+            } else {
+                addPost.setVisibility(View.GONE);
+            }
+
+            TextView addTel = (TextView) findViewById(R.id.place_address_telephone);
+            if(pTel != null && !pTel.isEmpty()) {
+                addTel.setText(pTel);
+            } else {
+                addTel.setVisibility(View.GONE);
+            }
+
+            TextView placeWeb = (TextView) findViewById(R.id.place_website);
+            if(pWeb != null && !pWeb.isEmpty()) {
+                addTel.setText(pWeb);
+            } else {
+                addTel.setVisibility(View.GONE);
+            }
 
         }
 
