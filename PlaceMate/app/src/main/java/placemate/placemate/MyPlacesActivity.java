@@ -84,7 +84,7 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                setNotification("It's almost dinner time", "Click on me to find somewhere to eat!");
+                setNotification("Want to view your favourite places?", "Click on me to find them!");
             }
         }, 10000);
 

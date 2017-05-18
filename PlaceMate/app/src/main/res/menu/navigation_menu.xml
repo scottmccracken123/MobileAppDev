@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:bwq="http://schemas.android.com/apk/res-auto"
     >
+
     <item android:id="@+id/nav_my_places"
           android:icon="@mipmap/ic_home_black_24dp"
           android:title="My Places" />
@@ -17,7 +18,8 @@
 
     <item android:id="@+id/nav_user_guide"
         android:icon="@mipmap/ic_help_black_24dp"
-        android:title="User Guide" />
+        android:title="User Guide"
+        />
 
 
     <item

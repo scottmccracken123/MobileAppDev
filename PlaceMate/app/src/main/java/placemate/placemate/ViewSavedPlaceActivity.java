@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -19,10 +21,12 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,6 +45,7 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
     private static final String TAG = "SavedPlaceActivity";
     private static final int LOADER_ID = 0x01;
     public String placeId, placeName, placeType, placeRating, addressOne, addressTwo, city, postcode,phoneNumber, website, longitude, latitude;
+    private byte[] bestImg;
     public String[] columns;
     private final int permissionNumber = 10;
     private double cLongitude;
@@ -139,7 +144,7 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
-        String[] columns = new String[]{"name", "placeType", "rating", "addressOne", "addressTwo", "city", "postcode", "phoneNumber", "website", "longitude", "latitude"};
+        String[] columns = new String[]{"name", "placeType", "rating", "addressOne", "addressTwo", "city", "postcode", "phoneNumber", "website", "longitude", "latitude", "placeBestImg"};
 
         //pulling the data using custom loader from content provider
         //if id = 1 query should say
@@ -163,6 +168,7 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
             website = data.getString(8);
             longitude = data.getString(9);
             latitude = data.getString(10);
+            bestImg = data.getBlob(11);
         }
 
         TextView name = (TextView) findViewById(R.id.place_name);
@@ -228,6 +234,18 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
         } else {
             addTel.setVisibility(View.GONE);
         }
+
+        ImageView imageView = (ImageView) findViewById(R.id.place_image);
+        if(bestImg != null){
+
+            Bitmap imgBitMap = BitmapFactory.decodeByteArray(bestImg, 0, bestImg.length);
+            imageView.setImageBitmap(imgBitMap);
+
+        } else {
+            imageView.setVisibility(View.GONE);
+        }
+
+
     }
 
     @Override
