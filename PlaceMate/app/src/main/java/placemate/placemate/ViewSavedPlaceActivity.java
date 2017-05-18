@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +35,13 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
     public String placeName;
     public String placeType;
     public String placeRating;
+    public String addressOne;
+    public String addressTwo;
+    public String city;
+    public String postcode;
+    public String phoneNumber;
+
+    public String[] columns;
     ContentResolver resolver;
     Button deleteButton;
 
@@ -103,7 +111,7 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
-        String[] columns = new String[]{"name", "placeType", "rating"};
+        String[] columns = new String[]{"name", "placeType", "rating", "addressOne", "addressTwo", "city", "postcode", "phoneNumber"};
 
         //pulling the data using custom loader from content provider
         //if id = 1 query should say
@@ -115,19 +123,73 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         //data for the selected place has been pulled from db
         while(data.moveToNext()) {
+
             placeName = data.getString(0);
             placeType = data.getString(1);
             placeRating = data.getString(2);
+            addressOne = data.getString(3);
+            addressTwo = data.getString(4);
+            city = data.getString(5);
+            postcode = data.getString(6);
+            phoneNumber = data.getString(7);
         }
 
         TextView name = (TextView) findViewById(R.id.place_name);
-        name.setText(placeName);
+        if(placeName != null  && !placeName.isEmpty()) {
+            name.setText(placeName);
+        } else {
+            name.setVisibility(View.GONE);
+        }
 
         TextView type = (TextView) findViewById(R.id.place_type);
-        type.setText(placeType);
+        if(placeType != null && !placeType.isEmpty()) {
+            type.setText(placeType);
+        } else {
+            type.setVisibility(View.GONE);
+        }
 
-        TextView rating = (TextView) findViewById(R.id.place_rating);
-        rating.setText(placeRating);
+        RatingBar rating = (RatingBar) findViewById(R.id.place_rating);
+        if(placeRating != null && !placeRating.isEmpty()) {
+            Float newRating = Float.parseFloat(placeRating);
+            rating.setRating(newRating/2);
+        } else {
+            rating.setVisibility(View.GONE);
+        }
+
+        TextView add1 = (TextView) findViewById(R.id.place_address_1);
+        if(addressOne != null && !addressOne.isEmpty()) {
+            add1.setText(addressOne);
+        } else {
+            add1.setVisibility(View.GONE);
+        }
+
+        TextView add2 = (TextView) findViewById(R.id.place_address_2);
+        if(addressTwo != null && !addressTwo.isEmpty()) {
+            add2.setText(addressTwo);
+        } else {
+            add2.setVisibility(View.GONE);
+        }
+
+        TextView addCity = (TextView) findViewById(R.id.place_address_city);
+        if(city != null && !city.isEmpty()) {
+            addCity.setText(city);
+        } else {
+            addCity.setVisibility(View.GONE);
+        }
+
+        TextView addPost = (TextView) findViewById(R.id.place_address_postcode);
+        if(postcode != null && !postcode.isEmpty()) {
+            addPost.setText(postcode);
+        } else {
+            addPost.setVisibility(View.GONE);
+        }
+
+        TextView addTel = (TextView) findViewById(R.id.place_address_telephone);
+        if(phoneNumber != null && !phoneNumber.isEmpty()) {
+            addTel.setText(phoneNumber);
+        } else {
+            addTel.setVisibility(View.GONE);
+        }
     }
 
     @Override
