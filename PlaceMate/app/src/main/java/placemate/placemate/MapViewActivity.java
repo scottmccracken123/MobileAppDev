@@ -86,13 +86,7 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_view);
 
-        //navigation switch for drawer menu
-
-        //navigation switch for drawer menu
-
-
-        // Adams stuff
-
+        // Intent filter for checking connectivity
         mIntentFilter = new IntentFilter();
         mIntentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
 
@@ -105,24 +99,23 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
 //        locationTxtView = (TextView) findViewById(R.id.longitudeTxt);
 //        getLocationBtn = (Button) findViewById(R.id.getLocationBtn);
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        //get variables from layouts and strings file
         clientSecret = getResources().getString(R.string.client_secret);
         clientId = getResources().getString(R.string.client_id);
 
+        //listen for location oncreate - get users location to fill map activity
         listener = new LocationListener() {
-
             @Override
             public void onLocationChanged(Location location) {
-
             }
 
             @Override
             public void onStatusChanged(String s, int i, Bundle bundle) {
-
             }
 
             @Override
             public void onProviderEnabled(String s) {
-
             }
 
             @Override
@@ -139,22 +132,15 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
             startActivity(intent);
         }
 
+
+
         //navigation switch for drawer menu
-
-        //navigation switch for drawer menu
-
-        // get variables form layout and strings
-//        locationTxtView = (TextView) findViewById(R.id.longitudeTxt);
-//        getLocationBtn = (Button) findViewById(R.id.getLocationBtn);
-
-
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
         mDrawerLayout.addDrawerListener(mToggle);
-        ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null){
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+        mToggle.syncState();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
 
         NavigationView nv = (NavigationView) findViewById(R.id.nav_view);
@@ -180,6 +166,15 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
         });
 
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(mToggle.onOptionsItemSelected(item)){
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
