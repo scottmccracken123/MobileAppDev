@@ -1,10 +1,11 @@
 package placemate.placemate;
-
+/*
+Used for map view
+Pulls data from API and lists on map
+ */
 
 import android.Manifest;
-import android.app.Fragment;
 import android.content.BroadcastReceiver;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -24,18 +25,14 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
-
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -44,7 +41,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -230,26 +226,6 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
             startActivity(toViewPlace);
             Log.d("QUERY", " THAN 0: "+Integer.toString(count));
         }
-
-
-
-
-            /*
-        } catch (Exception e){
-            Intent toViewPlace = new Intent(getApplicationContext(), ViewPlaceActivity.class);
-            toViewPlace.putExtra("venueID", selectedVenueId);
-            startActivity(toViewPlace);
-            Log.d("ERROR", "go through to normal");
-            e.printStackTrace();
-        }
-        */
-        //Intent toViewPlace = new Intent(getApplicationContext(), ViewSavedPlaceActivity.class);
-        //toViewPlace.putExtra("venueID", selectedVenueId);
-        //startActivity(toViewPlace);
-
-
-
-
 
         return false;
     }

@@ -10,27 +10,23 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.support.annotation.Nullable;
-import android.util.Log;
 import android.widget.Toast;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Created by jsnap on 13/05/2017.
+ Class used to create content provider
  */
 
 public class PlaceProvider extends ContentProvider{
 
-    // The Java namespace for the Content Provider
+    //  Java namespace for the Content Provider
     static final String PROVIDER_NAME = "placemate.placemate.PlaceProvider";
     static final String CP_NAME = "cpplace";
-    // Assigned to a content provider so any application can access it
-    // cpcontacts is the virtual directory in the provider
+    // cpplace is the virtual directory in the provider
     static final String URL = "content://" + PROVIDER_NAME + "/" + CP_NAME;
     static final Uri CONTENT_URL = Uri.parse(URL);
 
+    //database fields to be set externally
     static final String id = "id";
     static final String name = "name";
     static final String venueId = "venueId";
@@ -93,49 +89,41 @@ public class PlaceProvider extends ContentProvider{
         return false;
     }
 
-    // Returns a cursor that provides read and write access to the results of the query
-    // Uri : Links to the table in the provider (The From part of a query)
-    // projection : an array of columns to retrieve with each row
-    // selection : The where part of the query selection
-    // selectionArgs : The argument part of the where (where id = 1)
-    // sortOrder : The order by part of the query
+    //returns a cursor providing queries to the db
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
 
-        // Used to create a SQL query
+        // create SQL query
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
 
-        // Set table to query
+        // table to query
         queryBuilder.setTables(TABLE_NAME);
 
-        // Used to match uris with Content Providers
+        // match URI with content provider
         switch (uriMatcher.match(uri)) {
             case uriCode:
 
-                // A projection map maps from passed column names to database column names
+                //  maps from passed column names to database column names
                 queryBuilder.setProjectionMap(values);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
 
-        // Cursor provides read and write access to the database
+        //  provides read and write access to the database
         Cursor cursor = queryBuilder.query(sqlDB, projection, selection, selectionArgs, null,
                 null, sortOrder);
-
-        // Register to watch for URI changes
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
         return cursor;
     }
 
-    // Handles requests for the MIME type (Type of Data) of the data at the URI
     @Override
     public String getType(Uri uri) {
 
-        // Used to match uris with Content Providers
+        // used to match uris with Content Providers
         switch (uriMatcher.match(uri)) {
 
-            // vnd.android.cursor.dir/cpcontacts states that we expect multiple pieces of data
+            // states that multiple peices of data are expected
             case uriCode:
                 return "vnd.android.cursor.dir/" + CP_NAME;
 
@@ -144,25 +132,20 @@ public class PlaceProvider extends ContentProvider{
         }
     }
 
-    // Used to insert a new row into the provider
-    // Receives the URI (Uniform Resource Identifier) for the Content Provider and a set of values
+    // insert new row using content provider
     @Override
     public Uri insert(Uri uri, ContentValues values) {
 
-        // Gets the row id after inserting a map with the keys representing the the column
-        // names and their values. The second attribute is used when you try to insert
-        // an empty row
+        // insert into db
         long rowID = sqlDB.insert(TABLE_NAME, null, values);
 
-        // Verify a row has been added
+        // check row has been added
         if (rowID > 0) {
 
-            // Append the given id to the path and return a Builder used to manipulate URI
-            // references
+            // append the id to path and return builder
             Uri _uri = ContentUris.withAppendedId(CONTENT_URL, rowID);
 
-            // getContentResolver provides access to the content model
-            // notifyChange notifies all observers that a row was updated
+            // notify watchers
             getContext().getContentResolver().notifyChange(_uri, null);
 
             // Return the Builder used to manipulate the URI
@@ -202,20 +185,19 @@ public class PlaceProvider extends ContentProvider{
         switch (uriMatcher.match(uri)) {
             case uriCode:
 
-                // Update the row or rows of data
+                // update rows
                 rowsUpdated = sqlDB.update(TABLE_NAME, values, selection, selectionArgs);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
 
-        // getContentResolver provides access to the content model
-        // notifyChange notifies all observers that a row was updated
+        // notify change notifies all listeners that a row was updated
         getContext().getContentResolver().notifyChange(uri, null);
         return rowsUpdated;
     }
 
-    // Creates and manages our database
+    // create and manages our database
     private static class DatabaseHelper extends SQLiteOpenHelper {
         DatabaseHelper(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -226,7 +208,7 @@ public class PlaceProvider extends ContentProvider{
             sqlDB.execSQL(CREATE_DB_TABLE);
         }
 
-        // Recreates the table when the database needs to be upgraded
+        // Recreates the table if needs to be upgraded
         @Override
         public void onUpgrade(SQLiteDatabase sqlDB, int oldVersion, int newVersion) {
             sqlDB.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);

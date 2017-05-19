@@ -18,8 +18,8 @@
         android:divider="#FAFAFA"
         android:dividerHeight="7dp"
         android:listSelector="@drawable/list_selector"
-        android:padding="5dip"/>
-    
+    ></ListView>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"

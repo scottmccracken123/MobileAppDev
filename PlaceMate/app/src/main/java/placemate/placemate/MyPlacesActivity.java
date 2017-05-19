@@ -5,16 +5,11 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ResolveInfo;
 import android.content.ContentResolver;
 import android.database.Cursor;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Handler;
-import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.TaskStackBuilder;
@@ -24,15 +19,9 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.NotificationCompat;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
-
 import android.view.MenuItem;
-
-import java.util.List;
-
+import java.util.ArrayList;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -41,13 +30,12 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class MyPlacesActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
 
-
+    //intialise variables for custom loaders
     private static final String TAG = "MyPlacesActivity";
     private static final int LOADER_ID = 0x01;
     private ListView listView;
@@ -69,16 +57,14 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
                 .addApi(Auth.GOOGLE_SIGN_IN_API)
                 .build();
 
-        //navigation switch for drawer menu
+        //navigation variables - display burger icon top right
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
         mDrawerLayout.addDrawerListener(mToggle);
         mToggle.syncState();
-
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
+        //handle notifications, setup after N amount of time
         Handler handler = new Handler();
 
         handler.postDelayed(new Runnable() {
@@ -91,7 +77,7 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
         //setNotification("It's almost dinner time", "Click on me to find somewhere to eat!");
         //add toggle option to layout
 
-
+        //navigation view
         NavigationView nv = (NavigationView) findViewById(R.id.nav_view);
         nv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -142,6 +128,7 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
         mGoogleApiClient.connect();
     }
 
+    //signout method for menu
     private void signOut() {
         Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
                 new ResultCallback<Status>() {
@@ -157,6 +144,7 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
 
 
 
+    //setup notification to be ran afer set amount of time
     public void setNotification(String title, String content) {
 
         NotificationCompat.Builder notBuilder = new NotificationCompat.Builder(this);
@@ -183,63 +171,47 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         //pulling the data using custom loader from content provider
-        return new CursorLoader(this, Uri.parse("content://placemate.placemate.PlaceProvider/cpplace"), null, null, null, null);
+        String[] columns = {"_id", "name", "placeType", "placeBestImg"};
+        return new CursorLoader(this, Uri.parse("content://placemate.placemate.PlaceProvider/cpplace"), columns, null, null, null);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 
-        if(data.getCount() == 0) {
-            TextView empty = (TextView) findViewById(R.id.place_empty);
-            empty.setText("You currently have no saved places.");
-        } else {
-            String[] fromColumns = new String[] {"name", "placeType", "_id"};
-            int[] toViews = {R.id.placeName, R.id.placeType};
+        //lists will store data from DB
+        ArrayList<byte[]> imgs = new ArrayList<byte[]>();
+        final ArrayList<String> names = new ArrayList<String>();
+        final ArrayList<String> types = new ArrayList<String>();
 
+        //loop through DB, adding data. - fields are nullable
+        if (data.moveToFirst()) {
+            do {
+                String currentName = data.getString(1);
+                String currentType = data.getString(2);
+                byte[] currentImg = data.getBlob(3);
 
-
-            SimpleCursorAdapter myCursorAdapter;
-            myCursorAdapter = new SimpleCursorAdapter(getBaseContext(),R.layout.list_row, data, fromColumns, toViews, 0);
-
-            /*while(data.moveToNext())
-            {
-                if(data.getBlob(0) != null){
-                    Log.d("BLOB TEST", "worked?");
-                } else {
-                    Log.d("BLOB NULL", "not worked");
-                }
-
-            }*/
-
-
-            //images upload?
-            /*SimpleCursorAdapter.ViewBinder viewBinder = new SimpleCursorAdapter.ViewBinder() {
-
-                public boolean setViewValue(View view, Cursor cursor,
-                                            int columnIndex) {
-                    ImageView image = (ImageView) view;
-                    byte[] byteArr = cursor.getBlob(columnIndex);
-                    image.setImageBitmap(BitmapFactory.decodeByteArray(byteArr, 0, byteArr.length));
-                    return true;
-                }
-            };
-            ImageView image = (ImageView) findViewById(R.id.list_image);
-            viewBinder.setViewValue(image, data, data.getColumnIndex("placeImg"));
-            myCursorAdapter.setViewBinder(viewBinder);*/
-
-            //create list adapter and set this
-            ListView listView = (ListView) findViewById(R.id.savedPlacesList);
-            listView.setAdapter(myCursorAdapter);
-
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Intent intent = new Intent(getBaseContext(), ViewSavedPlaceActivity.class);
-                    intent.putExtra("PLACE_ID", String.valueOf(id));
-                    startActivity(intent);
-                }
-            });
+                //add to arrays
+                imgs.add(currentImg);
+                types.add(currentType);
+                names.add(currentName);
+            } while (data.moveToNext());
         }
+
+
+        //custom imagecursoradapter
+        ImageCursorAdapter adapter = new ImageCursorAdapter(this, names, types, imgs);
+        ListView list = (ListView) findViewById(R.id.savedPlacesList);
+        list.setAdapter(adapter);
+
+        //if list item is clicked on, go to view saved place
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getBaseContext(), ViewSavedPlaceActivity.class);
+                intent.putExtra("PLACE_ID", String.valueOf(id));
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
