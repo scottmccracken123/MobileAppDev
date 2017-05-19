@@ -33,6 +33,11 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -77,10 +82,16 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
     private ActionBarDrawerToggle mToggle;
     private IntentFilter mIntentFilter;
 
+    GoogleApiClient mGoogleApiClient;
+
     @Override
     protected void onCreate( Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_view);
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API)
+                .build();
 
         // Intent filter for checking connectivity
         mIntentFilter = new IntentFilter();
@@ -156,7 +167,6 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
                         break;
                     case (R.id.nav_logout):
                         //code for actually logging out needs to be implemented
-                        Intent changeToLogout = new Intent(getApplicationContext(), LoginActivity.class);
                         break;
                     case(R.id.nav_user_guide):
                         Intent changeMap = new Intent(getApplicationContext(), UserGuideActivity.class);
@@ -169,6 +179,15 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
 
 
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

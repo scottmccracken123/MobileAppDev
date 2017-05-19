@@ -85,7 +85,12 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
 
         //request permissions
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        getLocation();
+        try {
+            getLocation();
+        } catch(Exception e){
+            Toast.makeText(getApplicationContext(), "Location is required", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
 
 
         //navigation variables - display burger icon top right

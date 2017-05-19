@@ -39,7 +39,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.formats.NativeAd;
+import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.nearby.messages.Strategy;
 
@@ -103,13 +107,18 @@ public class ViewPlaceActivity extends AppCompatActivity {
     private LocationManager locationManager;
 
 
+    //google sign in variables
+    GoogleApiClient mGoogleApiClient;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_place);
         btnSavePlace = (ImageView) findViewById(R.id.savePlace);
         mImg = (ImageView) findViewById(R.id.place_image);
-
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API)
+                .build();
 
 
         GetAPIData asyncTask = new GetAPIData();
@@ -171,8 +180,6 @@ public class ViewPlaceActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
-
 
         btnSavePlace.setOnClickListener(new View.OnClickListener(){
 
@@ -449,8 +456,26 @@ public class ViewPlaceActivity extends AppCompatActivity {
             invalidateOptionsMenu();
         }
 
+
+
+        //signout method for menu
+        private void signOut() {
+            Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                    new ResultCallback<com.google.android.gms.common.api.Status>() {
+                        @Override
+                        public void onResult(com.google.android.gms.common.api.Status status) {
+                            Intent loginPage = new Intent(ViewPlaceActivity.this, LoginActivity.class);
+                            startActivity(loginPage);
+
+                        }
+                    }
+            );
+        }
+
         private void setFields(){
 
+
+            //store for insertion into database - keyvalue pairs
             String pName, pType, pAdd1, pAdd2, pCity, pPost, pTel, pRating, pWeb;
             pName = resultsH.get("venueName");
             pType = resultsH.get("placeType");
@@ -462,6 +487,8 @@ public class ViewPlaceActivity extends AppCompatActivity {
             pRating = resultsH.get("rating");
             pWeb = resultsH.get("website");
 
+
+            //set text views
             TextView name = (TextView) findViewById(R.id.place_name);
             if(pName != null  && !pName.isEmpty()) {
                 name.setText(pName);

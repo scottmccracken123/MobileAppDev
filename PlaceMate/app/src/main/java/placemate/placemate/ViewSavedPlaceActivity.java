@@ -253,6 +253,8 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
 
     }
 
+
+
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
