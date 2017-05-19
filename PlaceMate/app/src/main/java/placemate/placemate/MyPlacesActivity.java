@@ -1,16 +1,23 @@
 package placemate.placemate;
 
 
+import android.*;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ContentResolver;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.CursorLoader;
@@ -20,6 +27,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.app.NotificationCompat;
+import android.util.Log;
 import android.view.MenuItem;
 import java.util.ArrayList;
 import android.view.View;
@@ -42,6 +50,15 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
     private ListView listView;
     private Button viewPlaceBtn;
     ContentResolver resolver;
+    private LocationListener listener;
+    private final int permissionNumber = 10;
+    private double longitude;
+    private double latitude;
+    private LocationManager locationManager;
+    private String clientId;
+    private String clientSecret;
+    private String BASE_URL;
+
 
     //navigation layout variables
     private DrawerLayout mDrawerLayout;
@@ -60,6 +77,15 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
 
 
 
+
+
+        //get variables from layouts and strings file
+        clientSecret = getResources().getString(R.string.client_secret);
+        clientId = getResources().getString(R.string.client_id);
+
+        //request permissions
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        getLocation();
 
 
         //navigation variables - display burger icon top right
@@ -94,6 +120,7 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
                         break;
                     case (R.id.nav_map_view):
                         Intent changeToMap = new Intent(getApplicationContext(), MapViewActivity.class);
+                        changeToMap.putExtra("URL", BASE_URL);
                         startActivity(changeToMap);
                         break;
                     case (R.id.nav_logout):
@@ -117,6 +144,30 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
         getSupportLoaderManager().initLoader(LOADER_ID, null, this);
 
     }
+
+
+
+    //get users location
+    void getLocation(){
+        // first check for permissions
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.INTERNET}
+                        ,permissionNumber);
+                boolean permissionGranted = true;
+            }
+
+            return;
+        }
+        Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        longitude = location.getLongitude();//-122.084;//location.getLongitude();
+        latitude = location.getLatitude();//37.4220;//location.getLatitude();
+        //API URL
+        BASE_URL = "https://api.foursquare.com/v2/venues/search?ll=" + latitude +"," + longitude + "&categoryId=4d4b7105d754a06374d81259,4d4b7105d754a06376d81259&radius=1000&client_id=" + clientId + "&client_secret=" +clientSecret+ "&v=20170101";
+        //locationTxtView.append("\n " + longitude + " " + latitude);
+
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
