@@ -1,5 +1,9 @@
 package placemate.placemate;
 
+/**
+ Class used to create content provider
+ */
+
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -12,10 +16,6 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.widget.Toast;
 import java.util.HashMap;
-
-/**
- Class used to create content provider
- */
 
 public class PlaceProvider extends ContentProvider{
 
@@ -55,12 +55,14 @@ public class PlaceProvider extends ContentProvider{
         uriMatcher.addURI(PROVIDER_NAME, CP_NAME, uriCode);
     }
 
+    //database object and some variables
     private SQLiteDatabase sqlDB;
     static final String DATABASE_NAME = "Placemate";
     static final String TABLE_NAME = "Places";
     static final int DATABASE_VERSION = 1;
 
 
+    //create table query
     static final String CREATE_DB_TABLE = " CREATE TABLE " + TABLE_NAME +
             " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
             " name TEXT," +
@@ -81,6 +83,7 @@ public class PlaceProvider extends ContentProvider{
 
     @Override
     public boolean onCreate() {
+        //create the database if one has not been initialised
         DatabaseHelper dbHelper = new DatabaseHelper(getContext());
         sqlDB = dbHelper.getWritableDatabase();
         if (sqlDB != null) {
@@ -155,7 +158,7 @@ public class PlaceProvider extends ContentProvider{
         return null;
     }
 
-    // Deletes a row or a selection of rows
+    //Deletes a row or a selection of rows depending on query sent through
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         int rowsDeleted = 0;
@@ -203,6 +206,7 @@ public class PlaceProvider extends ContentProvider{
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
         }
 
+        //create the database table
         @Override
         public void onCreate(SQLiteDatabase sqlDB) {
             sqlDB.execSQL(CREATE_DB_TABLE);

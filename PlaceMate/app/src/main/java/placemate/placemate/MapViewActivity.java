@@ -33,11 +33,8 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -56,15 +53,11 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-
-
-import static android.provider.UserDictionary.Words.APP_ID;
 import static com.loopj.android.http.AsyncHttpClient.LOG_TAG;
 import static java.lang.Double.parseDouble;
 
 public class MapViewActivity extends AppCompatActivity implements OnMapReadyCallback, OnMarkerClickListener {
-    private Button getLocationBtn;
-    private TextView locationTxtView;
+
     private LocationManager locationManager;
     private LocationListener listener;
     private final int permissionNumber = 10;
@@ -73,11 +66,9 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
     private JSONObject placeDetails;
     private String clientId;
     private String clientSecret;
-    private Button getApiBtn;
     private String result;
     private String BASE_URL;
     private GoogleMap map;
-    //nav variable intialisation
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mToggle;
     private IntentFilter mIntentFilter;
@@ -98,13 +89,9 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
         mIntentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
 
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        // get variables form layout and strings
-//        locationTxtView = (TextView) findViewById(R.id.longitudeTxt);
-//        getLocationBtn = (Button) findViewById(R.id.getLocationBtn);
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         //get variables from layouts and strings file
@@ -166,7 +153,6 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
                         startActivity(changeToMap);
                         break;
                     case (R.id.nav_logout):
-                        //code for actually logging out needs to be implemented
                         break;
                     case(R.id.nav_user_guide):
                         Intent changeMap = new Intent(getApplicationContext(), UserGuideActivity.class);
@@ -276,8 +262,8 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
             return;
         }
         Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        longitude = location.getLongitude();//-122.084;//location.getLongitude();
-        latitude = location.getLatitude();//37.4220;//location.getLatitude();
+        longitude = location.getLongitude();
+        latitude = location.getLatitude();
 
         //API URL
         BASE_URL = "https://api.foursquare.com/v2/venues/search?ll=" + latitude +"," + longitude + "&categoryId=4d4b7105d754a06374d81259,4d4b7105d754a06376d81259&radius=1000&client_id=" + clientId + "&client_secret=" +clientSecret+ "&v=20170101";
@@ -285,7 +271,6 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
 
         GetNearAPIData asyncTask = new GetNearAPIData();
         asyncTask.execute();
-        //locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 50, listener);
     }
 
     private void displayMarkers(JSONObject placeDetails) {
@@ -293,7 +278,6 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
             JSONArray venues = placeDetails.getJSONObject("response").getJSONArray("venues");
             if(venues.length() > 0) {
                 for (int i = 0; i < venues.length(); i++) {
-                    //Log.v("log", venues.getJSONObject(i).toString());
                     double lat = parseDouble(venues.getJSONObject(i).getJSONObject("location").getString("lat"));
                     double lng = parseDouble(venues.getJSONObject(i).getJSONObject("location").getString("lng"));
                     LatLng location = new LatLng(lat, lng);
@@ -314,22 +298,14 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
         @Override
         protected String doInBackground(Void... voids) {
 
-            //create a URI
-            //final String FORECAST_BASE_URL="https://api.foursquare.com/v2/venues/51d145718bbd51c5fe0f3132?client_id=YBO033ISFIBQBHR0RJ3O3RWTRMMS4GGDFTLUDYEMWYZQZWYO&client_secret=KMXY35UEU1VV53RQ2OVHFD3ZPQNWSX2YSK2LQOAHAK4ETTXZ&ll=51.513144,-0.124396&radius=2520&section=drinks&time=any&v=20150409&m=foursquare&limit=50&sortByDistance=1&offset=0";
-            //final String FORECAST_BASE_URL = "https://api.foursquare.com/v2/venues/search?ll=" + latitude +"," + longitude + "&client_id=YBO033ISFIBQBHR0RJ3O3RWTRMMS4GGDFTLUDYEMWYZQZWYO&client_secret=KMXY35UEU1VV53RQ2OVHFD3ZPQNWSX2YSK2LQOAHAK4ETTXZ&v=20150409";
-
             //check connectivity
             ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
             if (networkInfo !=null && networkInfo.isConnected()) {
                 //if the device is connected to a network, fetch data
-
                 //call the helper function to get data from the uri
                 Log.d(LOG_TAG, BASE_URL);
                 result = GET(BASE_URL);
-                //Log.v(LOG_TAG, result);
-
-
             }
             else {
                 String msg = "No network connection";
@@ -342,7 +318,6 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            //Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();
             try {
                 placeDetails = new JSONObject(s);
                 displayMarkers(placeDetails);
@@ -351,18 +326,19 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
             }
         }
 
-
         //The helper function that makes an HTTP GET request using the url passed in as the parameter
         private String GET(String url){
             InputStream is;
             String result="";
             URL request = null;
+
             //create a URL object from the string url passed in
             try {
                 request = new URL(url);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
+
             //create an HttpURLConnection object
             HttpURLConnection conn = null;
             try {

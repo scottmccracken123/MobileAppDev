@@ -1,7 +1,10 @@
 package placemate.placemate;
 
+/*
+Used for My Places activity
+Retrieves data from the SQLite db and shows in a list view
+*/
 
-import android.*;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -27,7 +30,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.app.NotificationCompat;
-import android.util.Log;
 import android.view.MenuItem;
 import java.util.ArrayList;
 import android.view.View;
@@ -48,9 +50,7 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
     private static final String TAG = "MyPlacesActivity";
     private static final int LOADER_ID = 0x01;
     private ListView listView;
-    private Button viewPlaceBtn;
     ContentResolver resolver;
-    private LocationListener listener;
     private final int permissionNumber = 10;
     private double longitude;
     private double latitude;
@@ -75,10 +75,6 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
                 .addApi(Auth.GOOGLE_SIGN_IN_API)
                 .build();
 
-
-
-
-
         //get variables from layouts and strings file
         clientSecret = getResources().getString(R.string.client_secret);
         clientId = getResources().getString(R.string.client_id);
@@ -102,16 +98,12 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
 
         //handle notifications, setup after N amount of time
         Handler handler = new Handler();
-
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 setNotification("Want to view your favourite places?", "Click on me to find them!");
             }
         }, 10000);
-
-        //setNotification("It's almost dinner time", "Click on me to find somewhere to eat!");
-        //add toggle option to layout
 
         //navigation view
         NavigationView nv = (NavigationView) findViewById(R.id.nav_view);
@@ -141,6 +133,7 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
         });
 
 
+        //find the listview that will be used later on
         listView = (ListView) findViewById(R.id.savedPlacesList);
 
         //initialise resolver
@@ -172,7 +165,6 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
         //locationTxtView.append("\n " + longitude + " " + latitude);
 
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

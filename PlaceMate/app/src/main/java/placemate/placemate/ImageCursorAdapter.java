@@ -9,21 +9,16 @@ Allows for images and different configurations of texts to be used with mylist.x
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import java.io.ByteArrayInputStream;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class ImageCursorAdapter extends ArrayAdapter<String> {
 
-    //
     private final Activity context;
     private final ArrayList<String> itemname;
     private final ArrayList<byte[]> imgid;
@@ -42,6 +37,7 @@ public class ImageCursorAdapter extends ArrayAdapter<String> {
     //setup DB
     public View getView(int position,View view,ViewGroup parent) {
 
+        //makes nav bar slide
         LayoutInflater inflater=context.getLayoutInflater();
         View rowView=inflater.inflate(R.layout.mylist, null,true);
 
@@ -50,7 +46,7 @@ public class ImageCursorAdapter extends ArrayAdapter<String> {
         TextView txtType = (TextView) rowView.findViewById(R.id.placeType);
         ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
 
-
+        //assign text to variables
         txtType.setText(itemtype.get(position));
         txtTitle.setText(itemname.get(position));
 

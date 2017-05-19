@@ -1,7 +1,10 @@
 package placemate.placemate;
 
-import android.app.DownloadManager;
-import android.app.PendingIntent;
+/*
+For viewing a place
+Pulls data from FourSquare API
+ */
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -16,8 +19,6 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Environment;
-import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ShareCompat;
@@ -37,24 +38,15 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.gms.ads.formats.NativeAd;
 import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.nearby.messages.Strategy;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -64,15 +56,9 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
-
 import cz.msebera.android.httpclient.util.ByteArrayBuffer;
-
-import static com.loopj.android.http.AsyncHttpClient.LOG_TAG;
 
 public class ViewPlaceActivity extends AppCompatActivity {
 
@@ -105,7 +91,6 @@ public class ViewPlaceActivity extends AppCompatActivity {
     private double cLongitude;
     private double cLatitude;
     private LocationManager locationManager;
-
 
     //google sign in variables
     GoogleApiClient mGoogleApiClient;
@@ -237,8 +222,6 @@ public class ViewPlaceActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
 
-
-
         // Fetch and store ShareActionProvide
         if(item.getItemId() == R.id.action_share){
             onShareAction();
@@ -251,6 +234,7 @@ public class ViewPlaceActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    //function to add data to db
     public void addData(){
 
         ContentValues values = new ContentValues();
@@ -266,6 +250,7 @@ public class ViewPlaceActivity extends AppCompatActivity {
         values.put(PlaceProvider.latitude, resultsH.get("latitude"));
         values.put(PlaceProvider.website, resultsH.get("url"));
         values.put(PlaceProvider.placeType, resultsH.get("placeType"));
+
         //add image as blob to db
         values.put(PlaceProvider.placeImg, downloadImgByteArray);
         values.put(PlaceProvider.placeBestImg, downloadedBestImgArray);
@@ -284,6 +269,7 @@ public class ViewPlaceActivity extends AppCompatActivity {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     };
 
+    //class which handles pulling of data from API
     private class GetAPIData extends AsyncTask<Void, String, String[]> {
 
         @Override
@@ -381,8 +367,6 @@ public class ViewPlaceActivity extends AppCompatActivity {
                 }
             }
 
-            //JSON NESTED ARRAYS DONE SEPERATELY
-
             //Get ICONS URL FROM API
             try{
                 JSONObject venueDetails = placeDetails.getJSONObject("response").getJSONObject("venue");
@@ -404,7 +388,6 @@ public class ViewPlaceActivity extends AppCompatActivity {
             try {
                 JSONObject venueDetails = placeDetails.getJSONObject("response").getJSONObject("venue");
                 resultsH.put("placeType", venueDetails.getJSONArray("categories").getJSONObject(0).getString("shortName"));
-                //james
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -472,6 +455,7 @@ public class ViewPlaceActivity extends AppCompatActivity {
             );
         }
 
+        //function to set fields in xml
         private void setFields(){
 
 
@@ -601,11 +585,6 @@ public class ViewPlaceActivity extends AppCompatActivity {
             is.close();
             return result;
         }
-
-
-
-
-
     }
 
 
@@ -642,8 +621,6 @@ public class ViewPlaceActivity extends AppCompatActivity {
 
             downloadedBestImgArray = result.get(0);
             downloadImgByteArray = result.get(1);
-            //ByteArrayInputStream imgStream = new ByteArrayInputStream(downloadedBestImgArray);
-
 
             if(downloadedBestImgArray != null){
                 ByteArrayInputStream imgStream = new ByteArrayInputStream(downloadedBestImgArray);
@@ -678,11 +655,12 @@ public class ViewPlaceActivity extends AppCompatActivity {
                 return null;
             }
         }
-
     }
 
+    //function to get directions
     public void directions(View view){
         try {
+            //see if location permission is enabled
             if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     requestPermissions(new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.INTERNET}
@@ -690,11 +668,15 @@ public class ViewPlaceActivity extends AppCompatActivity {
                 }
                 return;
             }
+            //get location longitude and latitude
             locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
             Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
             cLongitude = location.getLongitude();
             cLatitude = location.getLatitude();
 
+            //start intent to go to google maps
+            //pass in current long and lat (saddr)
+            //passin place long and lat (daddr)
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setData(Uri.parse("http://maps.google.com/maps?saddr="+cLatitude+","+cLongitude+"&daddr="+resultsH.get("longitude")+","+resultsH.get("latitude")));
             startActivity(intent);
@@ -702,11 +684,9 @@ public class ViewPlaceActivity extends AppCompatActivity {
         }catch(NullPointerException exception) {
             Toast.makeText(this, "The direction feature requires your devices location to be enabled.", Toast.LENGTH_LONG).show();
         }
-
-
-
     }
 
+    //function to share place to facebook
     private void shareLink(String urlToShare) {
         Intent intent = new Intent(Intent.ACTION_SEND); // change action
         intent.setType("text/plain");

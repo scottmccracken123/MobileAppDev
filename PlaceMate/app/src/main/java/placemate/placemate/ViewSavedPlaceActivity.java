@@ -1,6 +1,10 @@
 package placemate.placemate;
 
-import android.*;
+/*
+For viewing a saved place
+Pulls data from the database
+ */
+
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -21,28 +25,22 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.gms.ads.formats.NativeAd;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.vision.text.Text;
-
 import java.util.List;
 
 public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    //variables needed throughout
     private static final String TAG = "SavedPlaceActivity";
     private static final int LOADER_ID = 0x01;
     public String placeId, placeName, placeType, placeRating, addressOne, addressTwo, city, postcode,phoneNumber, website, longitude, latitude, venueId;
@@ -51,8 +49,6 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
     private final int permissionNumber = 10;
     private double cLongitude;
     private double cLatitude;
-
-
     ContentResolver resolver;
     Button mapButton;
     ImageView deleteButton, shareButton;
@@ -68,6 +64,8 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //sets layout of activity
         setContentView(R.layout.activity_view_saved_place);
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -80,8 +78,10 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
         mDrawerLayout.addDrawerListener(mToggle);
         mToggle.syncState();
 
+        //sets burger icon
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        //navigation menu
         NavigationView nv = (NavigationView) findViewById(R.id.nav_view);
         nv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -114,6 +114,8 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
         //initialising custom loader
         getSupportLoaderManager().initLoader(LOADER_ID, null, this);
 
+        //initialise map button
+        //used for map directions
         mapButton = (Button) findViewById(R.id.place_get_directions);
         mapButton.setOnClickListener(new View.OnClickListener(){
 
@@ -123,7 +125,8 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
             }
         });
 
-
+        //initialises the delete image
+        //seen as a heart, used to delete saved place from db
         deleteButton = (ImageView) findViewById(R.id.delete_button);
         deleteButton.setOnClickListener(new View.OnClickListener(){
 
@@ -133,7 +136,8 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
             }
         });
 
-
+        //initialises facebook image
+        //used to share place to facebook
         shareButton = (ImageView) findViewById(R.id.facebook_button);
         shareButton.setOnClickListener(new View.OnClickListener(){
 
@@ -148,6 +152,7 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
+        //columns that are pull from the db
         String[] columns = new String[]{"name", "placeType", "rating", "addressOne", "addressTwo", "city", "postcode", "phoneNumber", "website", "longitude", "latitude", "placeBestImg", "venueId"};
 
         //pulling the data using custom loader from content provider
@@ -159,6 +164,7 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         //data for the selected place has been pulled from db
+        //assign data to variables creating previously
         while(data.moveToNext()) {
 
             placeName = data.getString(0);
@@ -176,6 +182,7 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
             venueId = data.getString(12);
         }
 
+        //set place name in xml
         TextView name = (TextView) findViewById(R.id.place_name);
         if(placeName != null  && !placeName.isEmpty()) {
             name.setText(placeName);
@@ -183,6 +190,7 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
             name.setVisibility(View.GONE);
         }
 
+        //set place type in xml
         TextView type = (TextView) findViewById(R.id.place_type);
         if(placeType != null && !placeType.isEmpty()) {
             type.setText(placeType);
@@ -190,6 +198,7 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
             type.setVisibility(View.GONE);
         }
 
+        //set rating bar in xml
         RatingBar rating = (RatingBar) findViewById(R.id.place_rating);
         if(placeRating != null && !placeRating.isEmpty()) {
             Float newRating = Float.parseFloat(placeRating);
@@ -198,6 +207,7 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
             rating.setVisibility(View.GONE);
         }
 
+        //set address 1 in xml
         TextView add1 = (TextView) findViewById(R.id.place_address_1);
         if(addressOne != null && !addressOne.isEmpty()) {
             add1.setText(addressOne);
@@ -205,6 +215,7 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
             add1.setVisibility(View.GONE);
         }
 
+        //set address 2 in xml
         TextView add2 = (TextView) findViewById(R.id.place_address_2);
         if(addressTwo != null && !addressTwo.isEmpty()) {
             add2.setText(addressTwo);
@@ -212,6 +223,7 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
             add2.setVisibility(View.GONE);
         }
 
+        //set city in xml
         TextView addCity = (TextView) findViewById(R.id.place_address_city);
         if(city != null && !city.isEmpty()) {
             addCity.setText(city);
@@ -219,6 +231,7 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
             addCity.setVisibility(View.GONE);
         }
 
+        //set postcode in xml
         TextView addPost = (TextView) findViewById(R.id.place_address_postcode);
         if(postcode != null && !postcode.isEmpty()) {
             addPost.setText(postcode);
@@ -226,6 +239,7 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
             addPost.setVisibility(View.GONE);
         }
 
+        //set phone number in xml
         TextView addTel = (TextView) findViewById(R.id.place_address_telephone);
         if(phoneNumber != null && !phoneNumber.isEmpty()) {
             addTel.setText(phoneNumber);
@@ -233,6 +247,7 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
             addTel.setVisibility(View.GONE);
         }
 
+        //set website url in xml
         TextView placeWeb = (TextView) findViewById(R.id.place_website);
         if(website != null && !website.isEmpty()) {
             placeWeb.setText(website);
@@ -240,6 +255,7 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
             placeWeb.setVisibility(View.GONE);
         }
 
+        //set image in xml
         ImageView imageView = (ImageView) findViewById(R.id.place_image);
         if(bestImg != null){
 
@@ -249,11 +265,7 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
         } else {
             imageView.setVisibility(View.GONE);
         }
-
-
     }
-
-
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
@@ -270,13 +282,16 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
         return super.onOptionsItemSelected(item);
     }
 
+    //function to delete place
     public void deletePlace() {
-       int deletedRows = getContentResolver().delete(PlaceProvider.CONTENT_URL, "_id = " + placeId, null);
+        //delete place and return number of deleted rows
+        int deletedRows = getContentResolver().delete(PlaceProvider.CONTENT_URL, "_id = " + placeId, null);
 
+        //if deletion is successful
+        //rows should be greater than 0
+        //show toast and take user to view unsaved place (heart changes state)
         if(deletedRows > 0){
             toastMessage("Place Unsaved");
-            /*Intent intent = new Intent(getBaseContext(), MyPlacesActivity.class);
-            startActivity(intent);*/
             Intent toViewPlace = new Intent(getApplicationContext(), ViewPlaceActivity.class);
             toViewPlace.putExtra("venueID", venueId);
             startActivity(toViewPlace);
@@ -299,8 +314,10 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
         );
     }
 
+    //function to enable google maps directions
     public void directions(View view){
         try {
+            //see if location permission is enabled
             if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     requestPermissions(new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.INTERNET}
@@ -308,11 +325,15 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
                 }
                 return;
             }
+            //get location longitude and latitude
             locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
             Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
             cLongitude = location.getLongitude();
             cLatitude = location.getLatitude();
 
+            //start intent to go to google maps
+            //pass in current long and lat (saddr)
+            //passin place long and lat (daddr)
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setData(Uri.parse("http://maps.google.com/maps?saddr="+cLatitude+","+cLongitude+"&daddr="+longitude+","+latitude));
             startActivity(intent);
@@ -320,11 +341,9 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
         }catch(NullPointerException exception) {
             Toast.makeText(this, "The direction feature requires your devices location to be enabled.", Toast.LENGTH_LONG).show();
         }
-
-
-
     }
 
+    //function to share to facebook
     private void shareLink(String urlToShare) {
         Intent intent = new Intent(Intent.ACTION_SEND); // change action
         intent.setType("text/plain");

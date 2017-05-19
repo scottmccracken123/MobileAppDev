@@ -238,25 +238,6 @@
                     />
         </TableLayout>
 
-
-        <!--<Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Delete"
-            android:layout_below="@+id/table_directions"
-            android:id="@+id/delete_place"
-            />
-
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Share"
-            android:layout_below="@+id/delete_place"
-            android:id="@+id/place_share"
-            />-->
-
-
     </RelativeLayout>
     </ScrollView>
     <android.support.design.widget.NavigationView

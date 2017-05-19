@@ -1,22 +1,21 @@
 package placemate.placemate;
 
+/*
+Class to implement the login activity
+Includes google sign-in api
+ */
+
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
-
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
-import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
-import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -27,8 +26,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         public void onStart(){
                 super.onStart();
 
+                //check if user is signed in
                 OptionalPendingResult<GoogleSignInResult> checkIfIn = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
-
                 if(checkIfIn.isDone()) {
                     GoogleSignInResult result = checkIfIn.get();
                     handleSignInResult(result);
@@ -37,6 +36,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         @Override
         protected void onCreate(Bundle savedInstanceState) {
                 super.onCreate(savedInstanceState);
+
+                //set content from xml file
                 setContentView(R.layout.activity_login);
 
                 //Listener
@@ -69,15 +70,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
         private void handleSignInResult(GoogleSignInResult result) {
                if (result.isSuccess()) {
-                       // go to nice new page?
+                       //if sign-in is successful
+                       //send user to my places page
                        GoogleSignInAccount account = result.getSignInAccount();
-
                        Intent toMyPlaces = new Intent(LoginActivity.this, MyPlacesActivity.class);
                        startActivity(toMyPlaces);
 
                }else{
-
-                       // go to nasty page
+                       //if sign-in is unsuccessful
+                       //show error via toast
                        Toast.makeText(getApplicationContext(), "Error logging in through Google", Toast.LENGTH_SHORT).show();
 
                }
