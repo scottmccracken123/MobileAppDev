@@ -30,6 +30,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MyPlacesActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -206,6 +207,9 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
                 types.add(currentType);
                 names.add(currentName);
             } while (data.moveToNext());
+        } else {
+            TextView empty = (TextView) findViewById(R.id.place_empty);
+            empty.setText("You currently do not have any saved places. To add a saved place, please navigate to the Map View.");
         }
 
 

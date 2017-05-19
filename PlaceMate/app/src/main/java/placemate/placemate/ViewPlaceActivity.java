@@ -5,15 +5,21 @@ import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ShareCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -73,7 +79,8 @@ public class ViewPlaceActivity extends AppCompatActivity {
     private NavigationView mNavigationView;
     private JSONObject placeDetails;
     private TextView placeNameTxtView;
-    ImageView mImg;
+    ImageView mImg, shareButton;
+    Button mapButton;
     private String[] result = new String[2];
     private String clientId;
     private String clientSecret;
@@ -90,6 +97,10 @@ public class ViewPlaceActivity extends AppCompatActivity {
     private byte[] downloadedBestImgArray;
     HashMap<String, String> resultsH = new HashMap<String, String>();
     private String[] fields = {"venueName", "venueId", "longitude", "latitude", "rating", "phone", "url"};
+    private final int permissionNumber = 10;
+    private double cLongitude;
+    private double cLatitude;
+    private LocationManager locationManager;
 
 
     @Override
@@ -168,6 +179,24 @@ public class ViewPlaceActivity extends AppCompatActivity {
             @Override
             public void onClick(View v){
                 addData();
+            }
+        });
+
+        shareButton = (ImageView) findViewById(R.id.facebook_button);
+        shareButton.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v){
+                shareLink(resultsH.get("website"));
+            }
+        });
+
+        mapButton = (Button) findViewById(R.id.place_get_directions);
+        mapButton.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v){
+                directions(v);
             }
         });
     }
@@ -623,6 +652,52 @@ public class ViewPlaceActivity extends AppCompatActivity {
             }
         }
 
+    }
+
+    public void directions(View view){
+        try {
+            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    requestPermissions(new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.INTERNET}
+                            ,permissionNumber);
+                }
+                return;
+            }
+            locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+            Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            cLongitude = location.getLongitude();
+            cLatitude = location.getLatitude();
+
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse("http://maps.google.com/maps?saddr="+cLatitude+","+cLongitude+"&daddr="+resultsH.get("longitude")+","+resultsH.get("latitude")));
+            startActivity(intent);
+
+        }catch(NullPointerException exception) {
+            Toast.makeText(this, "The direction feature requires your devices location to be enabled.", Toast.LENGTH_LONG).show();
+        }
+
+
+
+    }
+
+    private void shareLink(String urlToShare) {
+        Intent intent = new Intent(Intent.ACTION_SEND); // change action
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, urlToShare);
+        boolean facebookAppFound = false;
+        List<ResolveInfo> matches = getPackageManager().queryIntentActivities(intent, 0);
+        for (ResolveInfo info:matches) {
+            if (info.activityInfo.packageName.toLowerCase().startsWith("com.facebook.katana")) {
+                intent.setPackage(info.activityInfo.packageName);
+                facebookAppFound = true;
+                break;
+            }
+        }
+        if (!facebookAppFound) {
+            String shareUrl = "https://www.facebook.com/sharer/sharer.php?u=" + urlToShare;
+            intent = new Intent(Intent.ACTION_VIEW, Uri.parse(shareUrl));
+        }
+        startActivity(intent);
     }
 
 
