@@ -256,9 +256,6 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
 
             return;
         }
-
-
-
         Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         longitude = location.getLongitude();//-122.084;//location.getLongitude();
         latitude = location.getLatitude();//37.4220;//location.getLatitude();
