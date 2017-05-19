@@ -31,6 +31,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.formats.NativeAd;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
@@ -44,7 +45,7 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
 
     private static final String TAG = "SavedPlaceActivity";
     private static final int LOADER_ID = 0x01;
-    public String placeId, placeName, placeType, placeRating, addressOne, addressTwo, city, postcode,phoneNumber, website, longitude, latitude;
+    public String placeId, placeName, placeType, placeRating, addressOne, addressTwo, city, postcode,phoneNumber, website, longitude, latitude, venueId;
     private byte[] bestImg;
     public String[] columns;
     private final int permissionNumber = 10;
@@ -53,7 +54,8 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
 
 
     ContentResolver resolver;
-    Button deleteButton, mapButton, shareButton;
+    Button mapButton;
+    ImageView deleteButton, shareButton;
 
     //navigation layout variables
     private DrawerLayout mDrawerLayout;
@@ -112,16 +114,7 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
         //initialising custom loader
         getSupportLoaderManager().initLoader(LOADER_ID, null, this);
 
-        deleteButton = (Button) findViewById(R.id.delete_place);
-        deleteButton.setOnClickListener(new View.OnClickListener(){
-
-            @Override
-            public void onClick(View v){
-                deletePlace();
-            }
-        });
-
-        mapButton = (Button) findViewById(R.id.place_directions);
+        mapButton = (Button) findViewById(R.id.place_get_directions);
         mapButton.setOnClickListener(new View.OnClickListener(){
 
             @Override
@@ -130,7 +123,18 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
             }
         });
 
-        shareButton = (Button) findViewById(R.id.place_share);
+
+        deleteButton = (ImageView) findViewById(R.id.delete_button);
+        deleteButton.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v){
+                deletePlace();
+            }
+        });
+
+
+        shareButton = (ImageView) findViewById(R.id.facebook_button);
         shareButton.setOnClickListener(new View.OnClickListener(){
 
             @Override
@@ -144,7 +148,7 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
-        String[] columns = new String[]{"name", "placeType", "rating", "addressOne", "addressTwo", "city", "postcode", "phoneNumber", "website", "longitude", "latitude", "placeBestImg"};
+        String[] columns = new String[]{"name", "placeType", "rating", "addressOne", "addressTwo", "city", "postcode", "phoneNumber", "website", "longitude", "latitude", "placeBestImg", "venueId"};
 
         //pulling the data using custom loader from content provider
         //if id = 1 query should say
@@ -169,6 +173,7 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
             longitude = data.getString(9);
             latitude = data.getString(10);
             bestImg = data.getBlob(11);
+            venueId = data.getString(12);
         }
 
         TextView name = (TextView) findViewById(R.id.place_name);
@@ -230,9 +235,9 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
 
         TextView placeWeb = (TextView) findViewById(R.id.place_website);
         if(website != null && !website.isEmpty()) {
-            addTel.setText(website);
+            placeWeb.setText(website);
         } else {
-            addTel.setVisibility(View.GONE);
+            placeWeb.setVisibility(View.GONE);
         }
 
         ImageView imageView = (ImageView) findViewById(R.id.place_image);
@@ -267,9 +272,12 @@ public class ViewSavedPlaceActivity extends AppCompatActivity implements LoaderM
        int deletedRows = getContentResolver().delete(PlaceProvider.CONTENT_URL, "_id = " + placeId, null);
 
         if(deletedRows > 0){
-            toastMessage("Place successfully deleted");
-            Intent intent = new Intent(getBaseContext(), MyPlacesActivity.class);
-            startActivity(intent);
+            toastMessage("Place Unsaved");
+            /*Intent intent = new Intent(getBaseContext(), MyPlacesActivity.class);
+            startActivity(intent);*/
+            Intent toViewPlace = new Intent(getApplicationContext(), ViewPlaceActivity.class);
+            toViewPlace.putExtra("venueID", venueId);
+            startActivity(toViewPlace);
         } else {
             toastMessage("Something went wrong, please try again.");
         }

@@ -32,6 +32,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.formats.NativeAd;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.nearby.messages.Strategy;
@@ -80,7 +81,7 @@ public class ViewPlaceActivity extends AppCompatActivity {
     private String PHOTO_URL;
     private String venueId;
     private String imgSize = "500x300";
-    private Button btnSavePlace;
+    private ImageView btnSavePlace;
     private String iconPrefix;
     private String iconSuffix;
     private String iconUrl;
@@ -95,7 +96,7 @@ public class ViewPlaceActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_place);
-        btnSavePlace = (Button) findViewById(R.id.btnSavePlace);
+        btnSavePlace = (ImageView) findViewById(R.id.savePlace);
         mImg = (ImageView) findViewById(R.id.place_image);
 
 
@@ -219,6 +220,8 @@ public class ViewPlaceActivity extends AppCompatActivity {
         ContentValues values = new ContentValues();
         values.put(PlaceProvider.name, resultsH.get("venueName"));
         values.put(PlaceProvider.venueId, resultsH.get("venueId"));
+        values.put(PlaceProvider.addressOne, resultsH.get("addressOne"));
+        values.put(PlaceProvider.addressTwo, resultsH.get("addressTwo"));
         values.put(PlaceProvider.city, resultsH.get("city"));
         values.put(PlaceProvider.postcode, resultsH.get("postcode"));
         values.put(PlaceProvider.phoneNumber, resultsH.get("phoneNumber"));
@@ -232,8 +235,12 @@ public class ViewPlaceActivity extends AppCompatActivity {
         values.put(PlaceProvider.placeBestImg, downloadedBestImgArray);
 
         Uri uri = getContentResolver().insert(PlaceProvider.CONTENT_URL, values);
+        long id = Long.valueOf(uri.getLastPathSegment());
 
-        toastMessage("New Place Added");
+        toastMessage("Place Saved");
+        Intent intent = new Intent(getBaseContext(), ViewSavedPlaceActivity.class);
+        intent.putExtra("PLACE_ID", String.valueOf(id));
+        startActivity(intent);
     }
 
     //makes toast with customisable message
@@ -366,6 +373,12 @@ public class ViewPlaceActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
+            try{
+                JSONObject venueDetails = placeDetails.getJSONObject("response").getJSONObject("venue");
+                resultsH.put("website", venueDetails.getString("url"));
+            } catch (JSONException e){
+                e.printStackTrace();
+            }
 
             //CODE FOR GETTING FULL ADDRESS
             try {
@@ -408,7 +421,6 @@ public class ViewPlaceActivity extends AppCompatActivity {
         }
 
         private void setFields(){
-            //Log.d("HEREEE", resultsH.get("zvenueName"));
 
             String pName, pType, pAdd1, pAdd2, pCity, pPost, pTel, pRating, pWeb;
             pName = resultsH.get("venueName");
@@ -480,9 +492,9 @@ public class ViewPlaceActivity extends AppCompatActivity {
 
             TextView placeWeb = (TextView) findViewById(R.id.place_website);
             if(pWeb != null && !pWeb.isEmpty()) {
-                addTel.setText(pWeb);
+                placeWeb.setText(pWeb);
             } else {
-                addTel.setVisibility(View.GONE);
+                placeWeb.setVisibility(View.GONE);
             }
 
         }
@@ -574,9 +586,17 @@ public class ViewPlaceActivity extends AppCompatActivity {
 
             downloadedBestImgArray = result.get(0);
             downloadImgByteArray = result.get(1);
-            //ByteArrayInputStream imgStream = new ByteArrayInputStream(downloadImgByteArray);
-            //Bitmap downloadedImg = BitmapFactory.decodeStream(imgStream);
-            //mImg.setImageBitmap(downloadedImg);
+            //ByteArrayInputStream imgStream = new ByteArrayInputStream(downloadedBestImgArray);
+
+
+            if(downloadedBestImgArray != null){
+                ByteArrayInputStream imgStream = new ByteArrayInputStream(downloadedBestImgArray);
+                Bitmap downloadedImg = BitmapFactory.decodeStream(imgStream);
+                mImg.setImageBitmap(downloadedImg);
+
+            } else {
+                mImg.setVisibility(View.GONE);
+            }
 
             Log.d("ICON", Arrays.toString(downloadImgByteArray));
             Log.d("BEST IMAGE", Arrays.toString(downloadedBestImgArray));
