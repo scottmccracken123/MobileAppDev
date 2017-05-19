@@ -57,6 +57,10 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
                 .addApi(Auth.GOOGLE_SIGN_IN_API)
                 .build();
 
+
+
+
+
         //navigation variables - display burger icon top right
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
@@ -144,6 +148,10 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
 
 
 
+
+
+
+
     //setup notification to be ran afer set amount of time
     public void setNotification(String title, String content) {
 
@@ -182,15 +190,18 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
         ArrayList<byte[]> imgs = new ArrayList<byte[]>();
         final ArrayList<String> names = new ArrayList<String>();
         final ArrayList<String> types = new ArrayList<String>();
+        final ArrayList<Integer> ids = new ArrayList<Integer>();
 
         //loop through DB, adding data. - fields are nullable
         if (data.moveToFirst()) {
             do {
+                int currentId = data.getInt(0);
                 String currentName = data.getString(1);
                 String currentType = data.getString(2);
                 byte[] currentImg = data.getBlob(3);
 
                 //add to arrays
+                ids.add(currentId);
                 imgs.add(currentImg);
                 types.add(currentType);
                 names.add(currentName);
@@ -208,7 +219,8 @@ public class MyPlacesActivity extends AppCompatActivity implements LoaderManager
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getBaseContext(), ViewSavedPlaceActivity.class);
-                intent.putExtra("PLACE_ID", String.valueOf(id));
+                String selectedId = Integer.toString(ids.get(+position));
+                intent.putExtra("PLACE_ID", String.valueOf(selectedId));
                 startActivity(intent);
             }
         });

@@ -122,6 +122,8 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
         };
         try {
             getLocation();
+
+
         }catch(NullPointerException exception) {
             Toast.makeText(this, "Mapview feature requires your devices location feature to be enabled.", Toast.LENGTH_LONG).show();
             Intent intent = new Intent(this, MyPlacesActivity.class);
@@ -247,16 +249,24 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.INTERNET}
                         ,permissionNumber);
+
+
+
             }
+
             return;
         }
+
+
+
         Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        longitude = location.getLongitude();
-        latitude = location.getLatitude();
+        longitude = location.getLongitude();//-122.084;//location.getLongitude();
+        latitude = location.getLatitude();//37.4220;//location.getLatitude();
 
         //API URL
         BASE_URL = "https://api.foursquare.com/v2/venues/search?ll=" + latitude +"," + longitude + "&categoryId=4d4b7105d754a06374d81259,4d4b7105d754a06376d81259&radius=1000&client_id=" + clientId + "&client_secret=" +clientSecret+ "&v=20170101";
         //locationTxtView.append("\n " + longitude + " " + latitude);
+
         GetNearAPIData asyncTask = new GetNearAPIData();
         asyncTask.execute();
         //locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 50, listener);
